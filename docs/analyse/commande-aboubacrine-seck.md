@@ -7,17 +7,10 @@ Quatre questions dont la réponse aiderait la direction à trancher.
 > [!test] Test
 > Le test : si la réponse est X, la direction fait A ; si elle est Y, elle fait B. Si A et B sont identiques, ce n'est pas une question analytique pertinente.
 
-1. **Pour décider où placer les moyens, la direction a besoin de savoir si les départs de feu en Seine-et-Marne sont concentrés sur quelques communes ou massifs, ou s'ils sont répartis un peu partout dans le département.**
-   Si les feux se concentrent sur quelques zones (par exemple autour de Fontainebleau), le SDIS peut y prépositionner des équipes et y mettre le guet. Si les feux sont dispersés, ça ne sert à rien de tout mettre au même endroit, il vaut mieux des moyens mobiles qui peuvent couvrir tout le département.
-
-2. **Pour décider à quel niveau de la Météo des forêts déclencher le dispositif renforcé, la direction a besoin de savoir, pour chaque niveau de l'indice, combien de jours ont eu au moins un départ de feu dans le 77.**
-   Si la part de jours avec feu augmente fortement à partir d'un niveau précis (par exemple à partir de « danger élevé »), c'est ce niveau qu'il faut prendre comme seuil. Si elle n'augmente qu'au niveau d'au-dessus, on peut monter le seuil et économiser des jours de dispositif renforcé.
-
-3. **Pour décider si le seuil doit être le même partout dans le département, la direction a besoin de savoir si l'indice « marche » de la même façon dans tous les secteurs du 77, et quelle part des feux démarre les jours où l'indice est faible.**
-   Si certains secteurs ont beaucoup de feux à un niveau d'indice bas alors que d'autres n'en ont presque pas, il faut un seuil différent par secteur, ce qui permet aussi de ne pas renforcer partout (le budget ne le permet pas). Si l'indice se comporte pareil partout, un seul seuil pour le département suffit. Et si une grosse part des feux part les jours à indice faible, il faut garder une surveillance minimum qui ne dépend pas de l'indice.
-
-4. **Pour décider si on peut garder le calibrage actuel de l'indice, la direction a besoin de savoir si, à niveau d'indice égal, le 77 a plus ou moins de départs de feu que les autres départements d'Île-de-France et que la moyenne nationale.**
-   Si le 77 a plus de feux que les autres à un même niveau, ça veut dire que l'indice sous-estime le risque chez nous et qu'il faut baisser le seuil de déclenchement. Si on est dans la moyenne, on peut garder un seuil proche de ce qui se fait ailleurs. Ça peut aussi aider à savoir si on peut compter sur des renforts des départements voisins les jours à risque (s'ils sont moins touchés au même moment).
+1. Pour décider où placer les moyens, la direction a besoin de savoir si les départs de feu en Seine-et-Marne sont concentrés sur quelques communes ou massifs, ou s'ils sont répartis un peu partout dans le département.
+2. Pour décider à quel niveau de la Météo des forêts déclencher le dispositif renforcé, la direction a besoin de savoir, pour chaque niveau de l'indice, combien de jours ont eu au moins un départ de feu dans le 77.
+3. Pour décider si le seuil doit être le même partout dans le département, la direction a besoin de savoir si l'indice « marche » de la même façon dans tous les secteurs du 77, et quelle part des feux démarre les jours où l'indice est faible.
+4. Pour décider si on peut garder le calibrage actuel de l'indice, la direction a besoin de savoir si, à niveau d'indice égal, le 77 a plus ou moins de départs de feu que les autres départements d'Île-de-France et que la moyenne nationale.
 
 ## 2. Les termes inconnus
 
