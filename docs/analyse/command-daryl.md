@@ -6,17 +6,22 @@ edited_seconds: 6
 
 ## 1. Les questions
 
-1. ou es ce que les departs de feux se sont faits le plus dans les annees anterieur
-2. a quel niveau de chaleur etait on lorsque cela s'est il declenche ?y avait il un point d'eau a cote
-3.
-4.
+1. Quelles zones géographiques de Seine-et-Marne concentrent historiquement la plus forte fréquence de départs de feu et les surfaces brûlées les plus importantes ?
+
+2. Quelles conditions météorologiques ont été associées aux départs de feu et aux incendies les plus importants dans le département ?
+
+3. Quel seuil de déclenchement et quelle répartition des moyens offrent le meilleur compromis entre couverture du risque et coût de mobilisation ?
+
+4. Comment le niveau de danger de la Météo des forêts se comporte-t-il face aux incendies observés, en Seine-et-Marne, en Île-de-France et en France ?
 
 ## 2. Les termes inconnus
 
 Les mots de la commande que vous ne savez pas définir précisément, ou qui peuvent se comprendre de plusieurs façons:
 
-|meteo des forets | etat climatique auquel est soumit la foret | quel est sa definition metier |
-
+| meteo des forets | etat climatique auquel est soumit la foret | quel est sa definition metier |
+| dispositif renforce | mobilisation massive d'effectif humain | es ce que le dispositif est dit renforcer a partir de seuil de mobilisation |
+| indice | element indicatif sur l'etat moteorologique des foret | es ce un indice numerique ou des classes |
+| feux de foret | incendie raffagant la foret | qualifie on un incendie de feux de foret lorsqu'il a atteint une certaine surface de la foret |
 
 
 ## 3. Les besoins
