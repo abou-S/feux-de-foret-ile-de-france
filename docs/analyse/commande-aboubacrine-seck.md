@@ -7,10 +7,10 @@ Quatre questions dont la réponse aiderait la direction à trancher.
 > [!test] Test
 > Le test : si la réponse est X, la direction fait A ; si elle est Y, elle fait B. Si A et B sont identiques, ce n'est pas une question analytique pertinente.
 
-1. Pour décider où placer les moyens, la direction a besoin de savoir si les départs de feu en Seine-et-Marne sont concentrés sur quelques communes ou massifs, ou s'ils sont répartis un peu partout dans le département.
-2. Pour décider à quel niveau de la Météo des forêts déclencher le dispositif renforcé, la direction a besoin de savoir, pour chaque niveau de l'indice, combien de jours ont eu au moins un départ de feu dans le 77.
-3. Pour décider si le seuil doit être le même partout dans le département, la direction a besoin de savoir si l'indice « marche » de la même façon dans tous les secteurs du 77, et quelle part des feux démarre les jours où l'indice est faible.
-4. Pour décider si on peut garder le calibrage actuel de l'indice, la direction a besoin de savoir si, à niveau d'indice égal, le 77 a plus ou moins de départs de feu que les autres départements d'Île-de-France et que la moyenne nationale.
+1. Quelle part des départs de feu et des surfaces brûlées en Seine-et-Marne se concentre dans les communes et massifs les plus touchés ?
+2. Pour chaque niveau de la Météo des forêts, quelle est la part des jours où au moins un départ de feu a eu lieu dans le 77 ?
+3. Dans chaque secteur du 77, combien de départs de feu ont lieu à chaque niveau de l'indice, et quelle part des feux démarre les jours où l'indice est au plus bas ?
+4. À niveau d'indice égal, combien de départs de feu par jour (rapporté à la surface boisée) compte le 77, comparé aux autres départements d'Île-de-France et à la moyenne nationale ?
 
 ## 2. Les termes inconnus
 
