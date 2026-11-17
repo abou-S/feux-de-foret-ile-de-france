@@ -1,5 +1,5 @@
 ---
-updated: 2026-11-13T12:32:19.918+01:00
+updated: 2026-11-17
 edited_seconds: 6
 ---
 # Analyse de la commande - DARYL WILLIAM FABO
@@ -18,6 +18,8 @@ edited_seconds: 6
 
 Les mots de la commande que vous ne savez pas définir précisément, ou qui peuvent se comprendre de plusieurs façons:
 
+| Terme | Ce que je crois qu'il veut dire | Ce qu'il faudrait vérifier |
+|---|---|---|
 | meteo des forets | etat climatique auquel est soumit la foret | quel est sa definition metier |
 | dispositif renforce | mobilisation massive d'effectif humain | es ce que le dispositif est dit renforcer a partir de seuil de mobilisation |
 | indice | element indicatif sur l'etat moteorologique des foret | es ce un indice numerique ou des classes |
