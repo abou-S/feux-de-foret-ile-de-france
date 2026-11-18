@@ -42,12 +42,12 @@ Une entrée par décision. Les entrées 001 à 005 sont des propositions issues 
 - **Date :** 2026-11-17
 - **Auteurs :** Aboubacrine Seck (proposition, à valider par le groupe)
 
-## 005 — G5 : vérifier Copernicus avant de décider
+## 005 — G5 : croiser Copernicus et la BDIFF, après vérification
 
-- **Question :** G5, quelles conditions météo sont associées aux feux ?
-- **Manque :** la Météo des forêts ne donne que le niveau de 1 à 4. Les variables détaillées seraient dans Copernicus, mais aucun fichier n'a été ouvert (cellules « inconnu »).
-- **Décision :** vérifier d'abord (ouvrir un fichier Copernicus, noter l'avis de suspension des mises à jour du 16/11/2026), puis choisir entre approximer et renoncer.
-- **Raison :** on ne décide pas sur des cellules « inconnu ».
-- **Coût :** G5 reste en attente. Si Copernicus est inexploitable dans le temps du projet, on renonce à G5 ou on se limite au niveau de synthèse.
+- **Question :** G5, quelles conditions météorologiques (Fire weather index, Drought code, Duff moisture code, Fine fuel moisture code) sont associées aux départs de feu et aux incendies les plus importants dans le 77 ?
+- **Manque :** les indices sont dans Copernicus, mais aucun fichier n'a été ouvert (dates, volume non vérifiés), les mises à jour sont suspendues depuis le 16/11/2026, et les indices sont sur une grille de points alors que la BDIFF localise les feux à la commune, sans coordonnées. La Météo des forêts ne donne que le niveau de synthèse de 1 à 4, pas les indices.
+- **Décision :** vérifier d'abord (ouvrir un fichier Copernicus, noter l'avis de suspension), puis approximer : croiser les indices avec les feux de la BDIFF par la date, en ramenant les indices au département du 77.
+- **Raison :** les feux existent dans la BDIFF (c'est ce que Daryl proposait de « collecter »), il manque seulement de confirmer que Copernicus est exploitable. On ne décide pas sur des cellules non vérifiées.
+- **Coût :** le croisement se fait à la date et au département, pas à l'endroit exact du feu. Si Copernicus est inexploitable dans le temps du projet, on renonce à G5 ou on se limite au niveau de synthèse de la Météo des forêts, qui n'est pas la valeur des indices.
 - **Date :** 2026-11-17
 - **Auteurs :** Aboubacrine Seck (proposition, à valider par le groupe)
