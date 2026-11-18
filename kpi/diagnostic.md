@@ -2,7 +2,7 @@
 
 Sujet : la commande du SDIS 77 pour la saison feux 2027.
 
-Une ligne par question du groupe (G1 à G5, voir `docs/sources/matrice.md`). Chaque ligne suit le même fil, de la stratégie à l'action. Le statut de chaque niveau est entre parenthèses : établi (citation de la commande ou résultat d'analyse) ou supposé.
+Une ligne par question du groupe (G1 à G5, voir `docs/sources/matrice.md`). Chaque ligne suit le même fil, de la stratégie à l'action. Le statut de chaque niveau est entre parenthèses : établi (citation de la commande ou résultat d'analyse) ou supposé.  
 
 ## Les quatre niveaux
 
