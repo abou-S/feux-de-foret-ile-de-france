@@ -15,12 +15,12 @@ Indicateur : **part des départs de feu partis dans la zone couverte**.
 | Formule : numérateur | Nombre de départs de feu du 77 dont le Code INSEE appartient à la zone couverte (les k communes retenues), sur la période de mesure |
 | Formule : dénominateur | Nombre total de départs de feu du 77 sur la même période |
 | Unité | % des départs de feu |
-| Paramètres | k, le nombre de communes couvertes (1, 3, 5 ou 10 ; valeur retenue : 3). Fixés d'avance : la règle de choix (les k communes qui ont eu le plus de feux sur la période de sélection), les périodes (sélection sur 2016-2023, mesure sur 2024-2025), la pondération (chaque feu compte pour 1 ; variante : pondération par la Surface parcourue) |
+| Paramètres | k, le nombre de communes couvertes (1, 3 ou 5 ; valeur retenue : 3). Fixés d'avance : la règle de choix (les k communes qui ont eu le plus de feux sur la période de sélection), les périodes (sélection sur 2016-2023, mesure sur 2024-2025), la pondération (chaque feu compte pour 1 ; variante : pondération par la Surface parcourue) |
 | Périmètre, période, granularité, fréquence | Seine-et-Marne. 2016-2025 (sélection 2016-2023, mesure 2024-2025). Un feu. Une fois par saison, après la diffusion de la BDIFF (N-1) |
 | Source et champs | BDIFF, export CSV du portail, critères Département = 77, du 01/01/2016 au 31/12/2025 (profil : `docs/qualite/rapport-bdiff.md`) : `Code INSEE`, `Nom de la commune`, `Surface parcourue (m2)`, `Année`, `Numéro` |
 | Lignes utilisables | 251 / 251 (100 %) : Code INSEE, Date de première alerte et Surface parcourue remplis partout, aucun doublon Année + Numéro (règles R1 et R2 réussies). Période de mesure 2024-2025 : 65 feux (10 en 2024, 55 en 2025) |
 | Proxy et biais | Voir ci-dessous |
-| Décision éclairée | Taux élevé et stable d'une année à l'autre : prépositionner patrouilles et guet sur ces k communes. Taux faible ou communes qui changent chaque année : préférer des moyens mobiles à des moyens fixes |
+| Décision éclairée | Taux élevé et commune stable d'une année à l'autre : prépositionner patrouilles et guet sur cette commune. Taux faible ou communes qui changent chaque année : préférer des moyens mobiles à des moyens fixes |
 | Propriétaire | Calcul : Iris. Relecture : [responsable qualité et conformité] |
 
 **Proxy et biais**
@@ -32,16 +32,31 @@ Indicateur : **part des départs de feu partis dans la zone couverte**.
 | « Massif » | La commune | La BDIFF n'a ni coordonnées ni notion de massif : un massif à cheval sur plusieurs communes est découpé | Sens inconnu |
 | « Importance d'un feu » (variante pondérée) | `Surface parcourue (m2)` | 194 surfaces sur 251 sont estimées, pas mesurées (77 %) | Ordre de grandeur seulement |
 
+### Résultats
+
+Communes choisies sur 2016-2023, taux mesuré sur 2024-2025 (65 feux) :
+
+| k | Communes retenues | Part des feux dans la zone | Part de la surface hors zone (garde-fou) |
+|---|---|---|---|
+| 1 | Fontainebleau | 44,6 % | 15,0 % |
+| **3** | Fontainebleau, Noisy-sur-École, Nemours | **50,8 %** | **12,9 %** |
+| 5 | + Arbonne-la-Forêt, Larchant | 53,8 % | 7,9 % |
+
+Stabilité (nombre d'années, de 2016 à 2025, où la commune est dans le top 3 annuel) : Fontainebleau 10 / 10, Nemours 4 / 10, Noisy-sur-École 3 / 10.
+
+**Verdict :** l'hypothèse « les feux sont concentrés sur quelques communes, toujours les mêmes » est **confirmée pour Fontainebleau seulement**. Elle est stable chaque année et regroupe près de la moitié des feux, même hors échantillon. Nemours et Noisy-sur-École sont instables : sous le garde-fou de stabilité (5 années sur 10), elles ne justifient pas de moyens fixes.
+
 ### Changer un paramètre
 
-On fait passer k de 3 à 5. Sur 2016-2025, avec sélection et mesure sur la même période : k = 3 (Fontainebleau, Nemours, Noisy-sur-École) donne 147 feux sur 251, soit **58,6 %** ; k = 5 (+ Arbonne-la-Forêt, Le Vaudoué) donne 162 feux sur 251, soit **64,5 %**.
+On fait passer k de 3 à 5 (mesure hors échantillon 2024-2025).
 
 **Ce qui change :**
-- **Le numérateur et le taux :** + 15 feux, + 6 points.
+- **Le numérateur et le taux :** de 50,8 % à 53,8 %, soit + 3 points pour 2 communes de plus.
+- **Le garde-fou :** la surface hors zone baisse de 12,9 % à 7,9 %.
 - **Le coût :** deux zones de plus à couvrir par des patrouilles ou du guet.
-- **La décision :** le gain par commune ajoutée diminue. Fontainebleau apporte 49 points à elle seule, les deux communes suivantes moins de 10 à elles deux, puis chaque commune ajoutée 2 à 3 points. Au-delà de k = 3, chaque commune coûte autant pour un gain faible : c'est un argument pour rester à 3 et redéployer le reste du budget vers le dispositif renforcé (G2).
+- **La décision :** Fontainebleau apporte 44,6 points à elle seule ; chaque commune ajoutée ensuite n'apporte que 1 à 3 points. Au-delà de k = 1, une commune de plus coûte autant pour un gain faible : c'est un argument pour placer les moyens fixes sur Fontainebleau et redéployer le reste du budget vers le dispositif renforcé (G2).
 
-**Ce qui ne change pas :** la formule, l'unité, le dénominateur (251 feux), la source et les champs, le grain, les proxys.
+**Ce qui ne change pas :** la formule, l'unité, le dénominateur (65 feux sur la période de mesure), la source et les champs, le grain, les proxys.
 
 ### RACER
 
@@ -49,14 +64,14 @@ On fait passer k de 3 à 5. Sur 2016-2025, avec sélection et mesure sur la mêm
 |---|---|
 | Relevant | Oui : il répond directement au premier arbitrage de la commande, « où faut-il concentrer nos moyens » |
 | Accepted | À confirmer avec le SDIS, qui doit fournir la liste des communes couvertes aujourd'hui et le plafond k fixé par le budget |
-| Credible | Oui si k et les périodes de sélection et de mesure sont écrits dans la fiche avant le calcul : un taux élevé veut dire que peu de communes concentrent les départs de feu |
+| Credible | Oui : k et les périodes sont fixés avant le calcul, et le résultat hors échantillon (50,8 %) reste proche du résultat sur toute la période (58,6 %) |
 | Easy | Oui pour le calcul : une seule source, des champs remplis à 100 %, quelques lignes de code. Non pour le suivi de 2027 : la BDIFF ne publie qu'avec un an de retard |
-| Robust | Moyen : il peut être gonflé en choisissant les communes après avoir vu les résultats. Voir garde-fous ci-dessous |
+| Robust | Moyen : il peut être gonflé en choisissant les communes après avoir vu les résultats ; la règle hors échantillon et les deux garde-fous le protègent |
 
 ### Détournement, garde-fou, risque résiduel
 
-- **Détournement :** celui qui calcule choisit les k communes sur la même période que celle où il mesure le taux. Ce sont par construction celles qui ont eu le plus de feux : le taux paraît excellent sans rien prouver pour 2027. Même effet en retenant seulement les saisons record (62 feux en 2020, 55 en 2025).
-- **Garde-fou :** une **règle fixée à l'avance** (communes choisies sur 2016-2023, taux mesuré sur 2024-2025), et un contrepoids, la **part de la surface parcourue hors de la zone couverte**. Ce contrepoids mesure l'impact des feux et non leur nombre : si la zone capte beaucoup de petits feux mais que les gros partent ailleurs, il monte alors que l'indicateur reste haut.
+- **Détournement :** celui qui calcule choisit les k communes sur la même période que celle où il mesure le taux. Ce sont par construction celles qui ont eu le plus de feux : le taux paraît meilleur (58,6 % sur 2016-2025 contre 50,8 % hors échantillon) sans rien prouver pour 2027. Même effet en retenant seulement les saisons record (62 feux en 2020, 55 en 2025).
+- **Garde-fou :** une **règle fixée à l'avance** (communes choisies sur 2016-2023, taux mesuré sur 2024-2025), et un contrepoids, la **part de la surface parcourue hors de la zone couverte** (12,9 % pour k = 3). Ce contrepoids mesure l'impact des feux et non leur nombre : si la zone capte beaucoup de petits feux mais que les gros partent ailleurs, il monte alors que l'indicateur reste haut.
 - **Risque résiduel :** l'indicateur mesure où sont les moyens, pas ce qu'ils empêchent. Une commune couverte n'a pas moins de feux pour autant. Aucun des deux garde-fous ne voit les feux non saisis dans la BDIFF.
 
 ### Pre-mortem
@@ -65,11 +80,11 @@ Dans un an, l'indicateur a fait prendre une mauvaise décision au SDIS. Les rais
 
 | Rang | Raison | Probabilité | Gravité | Garde-fou |
 |---|---|---|---|---|
-| 1 | La concentration venait de quelques saisons exceptionnelles (2020, 2025) : en 2027, les feux sont partis ailleurs et les moyens fixes étaient mal placés | Haute | Haute | Stabilité affichée à côté du taux : nombre d'années où chaque commune retenue est dans le top k. Moins de [5] années sur 10 : pas de moyens fixes sur cette commune |
-| 2 | La zone captait beaucoup de petits feux, mais les gros sont partis dans d'autres communes | Moyenne | Haute | Contrepoids : part de la surface parcourue hors zone. Au-delà de [50 %], on revoit le choix des communes |
+| 1 | La concentration venait de quelques saisons exceptionnelles : en 2027, les feux sont partis ailleurs et les moyens fixes étaient mal placés | Haute | Haute | Stabilité affichée à côté du taux : nombre d'années où chaque commune retenue est dans le top 3. Moins de 5 années sur 10 : pas de moyens fixes sur cette commune (aujourd'hui, seule Fontainebleau passe : 10 / 10) |
+| 2 | La zone captait beaucoup de petits feux, mais les gros sont partis dans d'autres communes | Moyenne | Haute | Contrepoids : part de la surface parcourue hors zone. Au-delà de 50 %, on revoit le choix des communes (aujourd'hui : 12,9 %) |
 | 3 | « Couvrir Fontainebleau » ne disait pas où placer les moyens dans un massif aussi grand : ils ont été dispersés | Moyenne | Moyenne | Pas de garde-fou pour l'instant : il faudrait une localisation plus fine (coordonnées du SDIS, BD Forêt) |
 
-Situation de référence : [a %] à mesurer (liste des communes couvertes à demander au SDIS). Taux hors échantillon 2024-2025 pour k = 3, part de la surface hors zone et stabilité : [à mesurer], avec le script de calcul.
+Situation de référence : [a %] à mesurer (liste des communes couvertes aujourd'hui à demander au SDIS). Valeur du proxy, hors échantillon 2024-2025 : 50,8 % pour k = 3, 44,6 % pour Fontainebleau seule.
 
 ---
 
