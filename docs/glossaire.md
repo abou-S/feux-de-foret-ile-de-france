@@ -1,6 +1,6 @@
 # Glossaire — Île-de-France
 
-Dernière mise à jour : 2026-11-17
+Dernière mise à jour : 2026-11-19
 
 Les termes sont classés par ordre alphabétique, une section par terme. Toute modification passe par un ticket et une pull request relue par le chef de projet. On ne supprime jamais un terme : on le marque « obsolète », avec la raison et la date.
 
@@ -16,10 +16,10 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Origine de la définition :** description du jeu « Interventions réalisées par les services d'incendie et de secours » sur data.gouv.fr.
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
-## Build-up Index (BUI) — Indice d'accumulation de sécheresse
+## Build-up Index (BUI / `fbupinx`) — Indice d'accumulation de sécheresse
 
 - **Définition :** Indicateur combinant l'état d'humidité de la couche organique intermédiaire et celui des couches organiques profondes pour représenter l'accumulation de conditions favorables à la combustion.
-- **Sources et colonnes :** Copernicus CEMS, jeu « Fire danger indices historical data », variable affichée Build-up index. Nom technique de variable dans les fichiers : à vérifier.
+- **Sources et colonnes :** Copernicus CEMS, jeu « Fire danger indices historical data », variable affichée Build-up index, variable technique dans les fichiers GRIB2 : `fbupinx`.
 - **Divergences :** À distinguer du Drought Code et du Duff Moisture Code, qui décrivent séparément des couches de matières organiques. Aucune divergence entre sources vérifiée, car une seule source est retenue.
 - **Règle retenue :** Proposition : garder cet indicateur séparé des deux composantes, sans les assimiler. Décision du groupe non prise ; lien vers le journal à ajouter.
 - **Unité ou granularité :** Sans unité ; estimation quotidienne sur une grille géographique.
@@ -64,10 +64,10 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Origine de la définition :** Message de commande du SDIS transmis au groupe ; non défini par Copernicus CEMS.
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
-## Drought Code (DC) — Indice de sécheresse profonde
+## Drought Code (DC / `drtcode`) — Indice de sécheresse profonde
 
 - **Définition :** Indicateur de l'humidité présente dans les couches organiques profondes et compactes du sol forestier.
-- **Sources et colonnes :** Copernicus CEMS, variable affichée Drought code. Nom technique dans le fichier : à vérifier.
+- **Sources et colonnes :** Copernicus CEMS, variable affichée Drought code, variable technique dans les fichiers GRIB2 : `drtcode`.
 - **Divergences :** À ne pas confondre avec le Duff Moisture Code, associé à une couche organique moins profonde. Aucune divergence entre producteurs étudiée.
 - **Règle retenue :** Proposition : décrire la sécheresse profonde indépendamment de la sécheresse des couches intermédiaires. Lien vers une décision validée à ajouter.
 - **Unité ou granularité :** Sans unité ; estimation quotidienne sur une grille géographique.
@@ -76,10 +76,10 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Origine de la définition :** Description de Drought code sur la fiche Copernicus CEMS.
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
-## Duff Moisture Code (DMC) — Indice d'humidité de la couche organique intermédiaire
+## Duff Moisture Code (DMC / `dufmcode`) — Indice d'humidité de la couche organique intermédiaire
 
 - **Définition :** Indicateur de l'humidité de matières organiques forestières moyennement profondes et peu compactées, situées approximativement entre 5 et 10 cm de profondeur selon la description fournie.
-- **Sources et colonnes :** Copernicus CEMS, variable affichée Duff moisture code. Nom technique dans le fichier : à vérifier.
+- **Sources et colonnes :** Copernicus CEMS, variable affichée Duff moisture code, variable technique dans les fichiers GRIB2 : `dufmcode`.
 - **Divergences :** Ne caractérise pas la même couche que le Fine Fuel Moisture Code (combustibles superficiels) ou le Drought Code (couches profondes).
 - **Règle retenue :** Proposition : utiliser le DMC pour la couche intermédiaire uniquement ; décision collective et lien au journal à ajouter.
 - **Unité ou granularité :** Sans unité ; estimation quotidienne sur une grille géographique.
@@ -87,6 +87,18 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Statut :** à vérifier.
 - **Origine de la définition :** Description de Duff moisture code sur la fiche Copernicus CEMS, complétée par l'extrait fourni dans la conversation.
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
+
+## `fdsrte` — Indice quotidien de sévérité des incendies
+
+- **Définition :** Indice qui estime la difficulté potentielle à maîtriser un incendie selon les conditions de danger du jour.
+- **Sources et colonnes :** Copernicus CEMS — `fdsrte`.
+- **Divergences :** Aucune identifiée.
+- **Règle retenue :** À définir.
+- **Unité ou granularité :** Indice numérique sans unité, quotidien.
+- **Exemple :** Valeur réelle non vérifiée.
+- **Statut :** à vérifier
+- **Origine de la définition :** Documentation Copernicus CEMS.
+- **Ajouté par :** Daryl William Fabo, 2026-11-19.
 
 ## Feu de forêt
 
@@ -112,10 +124,10 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Origine de la définition :** déduite du nom de la colonne, pas confirmée par la documentation.
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
-## Fine Fuel Moisture Code (FFMC) — Indice d'humidité des combustibles fins
+## Fine Fuel Moisture Code (FFMC / `ffmcode`) — Indice d'humidité des combustibles fins
 
 - **Définition :** Indicateur de l'humidité des éléments végétaux fins proches de la surface, comme les aiguilles, feuilles mortes et petites brindilles, qui peuvent s'enflammer rapidement.
-- **Sources et colonnes :** Copernicus CEMS, variable affichée Fine fuel moisture code. Nom technique dans le fichier : à vérifier.
+- **Sources et colonnes :** Copernicus CEMS, variable affichée Fine fuel moisture code, variable technique dans les fichiers GRIB2 : `ffmcode`.
 - **Divergences :** Mesure un compartiment de combustible plus superficiel que le Duff Moisture Code et le Drought Code.
 - **Règle retenue :** Proposition : réserver ce terme à l'état des combustibles fins superficiels, sans l'utiliser comme nombre de départs de feu. Décision et lien au journal à ajouter.
 - **Unité ou granularité :** Sans unité ; estimation quotidienne sur une grille géographique.
@@ -136,10 +148,10 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Origine de la définition :** Description de Fire danger index sur la fiche Copernicus CEMS.
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
-## Fire Weather Index (FWI) — Indice forêt-météo
+## Fire Weather Index (FWI / `fwinx`) — Indice forêt-météo
 
 - **Définition :** Indicateur météorologique synthétisant notamment la propagation initiale potentielle et l'accumulation de sécheresse pour décrire l'intensité potentielle d'un feu.
-- **Sources et colonnes :** Copernicus CEMS, variable affichée Fire weather index. Nom technique dans le fichier : à vérifier.
+- **Sources et colonnes :** Copernicus CEMS, variable affichée Fire weather index, variable technique dans les fichiers GRIB2 : `fwinx`.
 - **Divergences :** Le FWI est une valeur d'indice ; il ne doit pas être confondu avec un incendie constaté ni être directement interprété comme l'un des niveaux de la Météo des forêts sans règle de correspondance validée.
 - **Règle retenue :** Proposition : conserver le FWI numérique comme indicateur distinct ; modalités d'éventuelle catégorisation à décider. Lien vers le journal à ajouter.
 - **Unité ou granularité :** Sans unité ; estimation quotidienne sur une grille géographique.
@@ -158,6 +170,18 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :**
 - **Origine de la définition :** Message du SDIS et intitulés des variables de Copernicus CEMS.
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
+
+## `infsinx` — Indice de propagation initiale
+
+- **Définition :** Indice qui estime la vitesse potentielle de propagation d'un incendie au début de son développement.
+- **Sources et colonnes :** Copernicus CEMS — `infsinx`.
+- **Divergences :** Aucune identifiée.
+- **Règle retenue :** À définir.
+- **Unité ou granularité :** Indice numérique sans unité, quotidien.
+- **Exemple :** Valeur réelle non vérifiée.
+- **Statut :** à vérifier
+- **Origine de la définition :** Documentation Copernicus CEMS.
+- **Ajouté par :** Daryl William Fabo, 2026-11-19.
 
 ## Jour avec feu
 
