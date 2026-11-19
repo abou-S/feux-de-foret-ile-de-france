@@ -4,7 +4,7 @@ Une fiche par objectif (voir `kpi/objectifs.md`). Chacun remplit **sa** fiche su
 
 ---
 
-## Fiche G1 — Concentration géographique des feux — Aboubacrine
+## Fiche G1 — Concentration géographique des feux — Iris
 
 ### Fiche d'indicateur
 
@@ -145,7 +145,7 @@ Dans un an, l'indicateur a fait prendre une mauvaise décision au SDIS. Les rais
 
 ---
 
-## Fiche G4 — Comparaison avec les autres départements — Iris
+## Fiche G4 — Comparaison avec les autres départements — Aboubacrine
 
 ### Fiche d'indicateur
 
