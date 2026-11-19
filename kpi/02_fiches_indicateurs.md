@@ -177,40 +177,92 @@ Dans un an, l'indicateur a fait prendre une mauvaise décision au SDIS. Les rais
 ### Pre-mortem
 
 ---
+## Fiche G4 — Comparaison avec les autres départements — Iris
 
-## Fiche G4 — Comparaison avec les autres départements — Aboubacrine
+Indicateur : **écart de la part des jours d'alerte avec feu, 77 contre autres départements d'Île-de-France**.
 
 ### Fiche d'indicateur
 
 | Rubrique | Valeur |
 |---|---|
-| Question et objectif | |
-| Formule : numérateur | |
-| Formule : dénominateur | |
-| Unité | |
-| Paramètres | |
-| Périmètre, période, granularité, fréquence | |
-| Source et champs | |
-| Lignes utilisables | |
-| Proxy et biais | |
-| Décision éclairée | |
-| Propriétaire | |
+| Question et objectif | Question G4 : à niveau d'indice égal, le 77 a-t-il plus ou moins de feux que les autres départements d'Île-de-France et que le reste de la France ? Objectif : avant le début de la saison 2027, retenir pour le 77 un seuil dont la part des jours d'alerte avec feu est au moins égale à [x %], la valeur des autres départements d'Île-de-France au même niveau, mesurée sur 2024 et 2025 |
+| Formule : numérateur | Pour un département : nombre de jours où le niveau prévu est ≥ N **et** où au moins un départ de feu est enregistré dans ce département |
+| Formule : dénominateur | Pour le même département : nombre de jours où le niveau prévu est ≥ N, sur la période couverte par l'indice |
+| Unité | % de jours ; indicateur suivi : écart taux(77) − taux(autres), en points |
+| Paramètres | N, le seuil (2, 3 ou 4 ; valeur retenue : 2, faute de jours de niveau 3). Fixés d'avance : le groupe de comparaison (78, 91, 95 regroupés ; 75, 92, 93, 94 exclus, sans aucune ligne dans la BDIFF), l'échéance (`niveau_j1`, prévision de la veille), le jour du feu (`Date de première alerte`), la définition d'un feu (une fiche BDIFF) |
+| Périmètre, période, granularité, fréquence | 77, 78, 91, 95. Saisons de l'indice (juin à septembre) 2024 et 2025. Un département pour un jour. Une fois par saison |
+| Source et champs | BDIFF, export CSV du portail, Île-de-France, 2016-2025 : `Département`, `Date de première alerte`. Météo des forêts, archives data.gouv.fr (`mdf_2024.csv`, `mdf_2025.csv`) : `date`, `num_dep`, `niveau_j1`. Jointure : département + jour (`docs/analyse/fusion_bdiff.py`, sorties `jours_dep.csv` et `feux_niveau.csv`) |
+| Lignes utilisables | Feux 2024-2025 : 77 : 65 · 78 : 3 · 91 : 3 · 95 : 0. Avec un niveau (juin-septembre) : 77 : 36 · 78 : 2 · 91 : 1 · 95 : 0. Les 29 feux du 77 sans niveau sont hors saison (22 en avril-mai 2025). Jours de niveau ≥ 2 dans le 77 : 22 en 2025, 0 en 2024 (fiche G2) ; dans le 78, le 91 et le 95 : [à mesurer dans `jours_dep.csv`] |
+| Proxy et biais | Voir ci-dessous |
+| Décision éclairée | Écart positif : l'indice annonce au moins aussi bien les feux dans le 77 qu'ailleurs, le seuil peut être aligné sur celui des voisins. Écart négatif : l'indice déclenche plus pour rien dans le 77, un seuil propre au 77 se justifie. Sous le seuil plancher : pas de comparaison, le seuil du 77 se fixe avec G2 seul |
+| Propriétaire | Calcul : Iris. Relecture : [responsable qualité et conformité] |
+
+**Proxy et biais**
+
+| Terme sans champ | Proxy utilisé | Biais | Sens |
+|---|---|---|---|
+| « Jour avec départ de feu » | Au moins une fiche BDIFF ce jour-là dans le département | Les feux non saisis manquent : le 78 et le 95 sont presque vides alors qu'ils sont boisés (rapport de qualité, règle R3) | Sous-estime le taux des autres départements, donc [x %] est trop bas et l'objectif trop facile à atteindre |
+| « Départ de feu » | Feu de forêt enregistré dans la BDIFF | Les autres feux de végétation (cultures, friches) n'y sont pas | Sous-estime tous les taux |
+| « Niveau comparable entre départements » | Même valeur de `niveau_j1` | Le niveau tient compte de la forêt de chaque département (présentation de Météo-France, citée dans la matrice) : un même niveau ne désigne pas le même danger partout | Sens inconnu |
+| « Jours couverts » | Juin à septembre seulement | 29 feux du 77 sur 65 (45 %) en 2024-2025 n'ont aucun niveau | Le taux ne décrit que l'été |
+
+### Résultats
+
+Feux joints à un niveau, 2024-2025 :
+
+| Département | Niveau 1 | Niveau 2 | Niveau 3 ou 4 | Total |
+|---|---|---|---|---|
+| 77 | 26 | 10 | 0 | 36 |
+| 78 | 1 | 1 | 0 | 2 |
+| 91 | 0 | 1 | 0 | 1 |
+| 95 | 0 | 0 | 0 | 0 |
+
+- **77, N = 2 :** 6 jours avec feu sur 22 jours de niveau ≥ 2 en 2025, soit **27 %** (2024 : aucun jour de niveau ≥ 2).
+- **Autres départements, N = 2 :** 2 jours avec feu sur [à mesurer] jours de niveau ≥ 2.
+
+**Verdict :** l'hypothèse G4 **ne peut pas être tranchée**. Les autres départements d'Île-de-France ne comptent que 3 feux avec un niveau en deux saisons, bien sous le seuil plancher : leur taux n'est pas interprétable. **Proposition au groupe :** remplacer le groupe de comparaison par la France entière (export national d'Aboubacrine), ou passer G4 en indicateur de contexte.
+
+**Constat associé :** 72 % des feux d'été du 77 (26 sur 36) sont partis un jour de niveau 1, et aucun un jour de niveau 3 ou 4.
 
 ### Changer un paramètre
+
+On fait passer N de 2 à 3.
+
+**Ce qui change :**
+- **Le dénominateur :** dans le 77, de 22 jours à 1 seul jour (2025), et toujours aucun en 2024.
+- **Le taux :** il devient 0 % (aucun feu ce jour-là), une valeur qui ne veut rien dire avec un seul jour.
+- **La comparaison :** aucun feu des autres départements n'est parti un jour de niveau 3 : leur numérateur vaut 0, la comparaison disparaît.
+- **La décision :** avec N = 3, G4 ne peut plus rien éclairer ; avec N = 2, il peut au moins décrire le 77.
+
+**Ce qui ne change pas :** la formule, l'unité, les sources et les champs, le grain, le groupe de comparaison, les proxys.
 
 ### RACER
 
 | Critère | Jugement |
 |---|---|
-| Relevant | |
-| Accepted | |
-| Credible | |
-| Easy | |
-| Robust | |
+| Relevant | Oui : il répond à la demande de la direction de savoir « comment l'indice se comporte dans notre département et dans les autres départements de la région » |
+| Accepted | À confirmer avec le SDIS : la définition d'un feu (une fiche BDIFF) et le groupe de comparaison. « Jour avec feu » et « niveau de danger » sont encore « à vérifier » dans le glossaire |
+| Credible | Non en l'état : avec 3 feux chez les voisins, deux personnes peuvent tirer des conclusions opposées du même chiffre |
+| Easy | Oui pour le calcul : deux sources publiques et une jointure par département et par jour, déjà écrite. Non pour 2027 : la BDIFF publie avec un an de retard |
+| Robust | Faible : il dépend du choix de N et de la sous-saisie des feux chez les voisins. Voir garde-fous ci-dessous |
 
 ### Détournement, garde-fou, risque résiduel
 
+- **Détournement :** celui qui fixe le seuil choisit un N très haut dans le 77. Il ne reste que quelques jours de danger extrême, souvent accompagnés d'un feu : le taux du 77 monte et dépasse celui des voisins, alors que la plupart des feux partent hors alerte (aujourd'hui, 72 % partent au niveau 1).
+- **Garde-fou :** la **part des feux du 77 partis un jour de niveau < N** (feux partis hors alerte / feux pendant la saison de l'indice). Il compte des feux, pas des jours : il monte quand on relève N. On affiche aussi le **volume** à côté du taux (nombre de feux et de jours d'alerte par département), avec un **seuil plancher** : sous [10] feux ou [20] jours d'alerte dans un département, son taux n'est pas lu.
+- **Risque résiduel :** un département sans feu enregistré n'est pas forcément un département sans feu : la BDIFF peut ne pas avoir été remplie. Aucun garde-fou ne distingue une absence de feu d'une absence de saisie.
+
 ### Pre-mortem
+
+Dans un an, l'indicateur a fait prendre une mauvaise décision au SDIS. Les raisons plausibles, de la plus probable et grave à la moins probable :
+
+| Rang | Raison | Probabilité | Gravité | Garde-fou |
+|---|---|---|---|---|
+| 1 | La valeur des voisins reposait sur une poignée de feux (3 en deux saisons) : [x %] n'était que du hasard, et le seuil du 77 a été calé dessus | Haute | Haute | Seuil plancher de volume : sous [10] feux ou [20] jours d'alerte par département, pas de comparaison ; recours à la France entière |
+| 2 | Les feux des voisins étaient sous-saisis dans la BDIFF : [x %] était trop bas, et le seuil du 77 a été jugé bon à tort | Haute | Moyenne | Réconciliation des totaux : feux BDIFF par département et par an comparés aux « feux de végétation » de la source Interventions SIS ; un écart de plus de [50 %] exclut le département |
+| 3 | Un même niveau ne désignait pas le même danger dans le 77 et chez les voisins : on a copié un seuil inadapté | Moyenne | Moyenne | Pas de garde-fou pour l'instant : à confirmer dans la documentation de Météo-France |
+
+Situation de référence : [x %] à mesurer, mais non interprétable sur l'Île-de-France en l'état (voir verdict).
 
 ---
 
