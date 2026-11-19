@@ -157,39 +157,71 @@ Dans un an, l'indicateur a fait prendre une mauvaise décision au SDIS. Les rais
 
 ---
 
-## Fiche G3 — Feux des jours d'indice bas — Harold
+## Fiche G3 — Feux des jours d'indice bas — Harrold
+
+Indicateur : **nombre de feux partis les jours d'indice bas, pour la cause, la commune ou la période identifiée**.
 
 ### Fiche d'indicateur
 
 | Rubrique | Valeur |
 |---|---|
-| Question et objectif | |
-| Formule : numérateur | |
-| Formule : dénominateur | |
-| Unité | |
-| Paramètres | |
-| Périmètre, période, granularité, fréquence | |
-| Source et champs | |
-| Lignes utilisables | |
-| Proxy et biais | |
-| Décision éclairée | |
-| Propriétaire | |
+| Question et objectif | Question G3 : les feux du 77 qui partent les jours de niveau d'indice bas (niveau < [N]) ont-ils une cause, une commune ou une période en commun ? Objectif : d'ici la fin de la saison 2027, faire passer de [a] à [b] le nombre de ces feux pour la cause, la commune ou la période identifiée, sans déclencher le dispositif renforcé complet ces jours-là (`kpi/objectifs.md`) |
+| Formule : numérateur | Nombre de fiches BDIFF du 77 dont la Date de première alerte tombe un jour de niveau < [N] (`niveau_j1`, département 77), dans la fenêtre où la Météo des forêts est publiée. Une fois un point commun confirmé (cause, commune ou période), on ne compte que les feux de ce sous-groupe |
+| Formule : dénominateur | Pas de dénominateur au sens strict : l'objectif G3 est un effectif, pas une part (`kpi/objectifs.md`). Pour diagnostiquer l'indicateur, on garde en parallèle une part = numérateur (sans le filtre cause/commune/période) / nombre total de fiches BDIFF du 77 tombant dans la même fenêtre |
+| Unité | Nombre de feux pour l'indicateur principal (effectif) ; % en indicateur de diagnostic |
+| Paramètres | [N], le même seuil que G2 (`kpi/objectifs.md`), pas encore fixé. Testé ici à N = 2 (bas = niveau 1 seul) et comparé à N = 3 (niveau 1 et 2). Fenêtre de publication de la Météo des forêts (juin-septembre 2024 et 2025) |
+| Périmètre, période, granularité, fréquence | Seine-et-Marne (77), pas de secteur (décision 003). 2024 et 2025, seules années où la Météo des forêts et la BDIFF se croisent (décision 002) ; 2024 sans variation de niveau (niveau 1 toute l'année), donc en pratique 2025 seul exploitable. Granularité : un feu, c'est-à-dire une fiche BDIFF (décision 006). Recalcul à chaque campagne BDIFF publiée |
+| Source et champs | BDIFF, export CSV du portail, Département = 77, 2007-2025 (`docs/sources/fiche-bdiff.md`) : Date de première alerte, Code INSEE, Nom de la commune, Nature, Surface parcourue (m2). Météo des forêts, archives data.gouv.fr (`mdf_2024.csv`, `mdf_2025.csv`) : date, num_dep, niveau_j1 (`docs/sources/fiche-meteo-des-forets.md`). Jointure : département + jour, même convention que G2 (voir Proxy et biais) |
+| Lignes utilisables | 36 / 36 (100 %) fiches BDIFF du 77 tombant dans la fenêtre de l'indice (6 en 2024, 30 en 2025) : Code INSEE et Date de première alerte toujours remplis, aucune marquée « données partielles ou non valides ». Cause (Nature) vide pour 17 des 30 feux de 2025 (57 %), et pour 10 des 20 feux de niveau 1 (50 %) : le sous-groupe « cause connue » parmi les feux de jours bas est petit (10 feux sur 2025) |
+| Proxy et biais | Voir ci-dessous |
+| Décision éclairée | Si un point commun net ressort (cause, commune ou période), informe une mesure ciblée hors indice. Contribue aussi à fixer [N] avec G2, puisque cet effectif est exactement le garde-fou que G2 utilise (les feux des jours de niveau < N) |
+| Propriétaire | Calcul : Harold. Relecture : [responsable qualité et conformité] |
+
+**Proxy et biais**
+
+| Terme sans champ | Proxy utilisé | Biais | Sens |
+|---|---|---|---|
+| « Jour concerné par `niveau_j1` » | `date` de publication + 1 jour (même convention que G2) | Déduit, pas confirmé par la documentation Météo-France. Si c'est faux, tous les feux sont décalés d'un jour, ce qui change qui est compté « jour bas » | Sens inconnu |
+| « Feu » | Une fiche BDIFF, donc un feu de forêt (décision 006) | Les feux de végétation hors forêt (champs, haies, bords de route) n'y sont pas, alors qu'ils peuvent aussi partir les jours d'indice bas | Sous-estime le phénomène |
+| « Point commun » | Cause (`Nature`), commune (`Nom de la commune` / `Code INSEE`), période (mois, jour de semaine) des feux de niveau < N | La cause est inconnue pour la moitié des feux de niveau bas (10/20 en 2025) : le point commun « cause » ne peut être jugé que sur un sous-groupe très réduit | Peut manquer un point commun réel si les causes inconnues diffèrent des causes connues |
+| « Indice bas » | `niveau_j1` au département (pas de découpage par secteur, décision 003) | Le niveau peut être bas pour tout le département alors qu'un secteur précis est sec | Sens inconnu |
 
 ### Changer un paramètre
+
+On fait passer N de 2 (bas = niveau 1 seul) à 3 (bas = niveau 1 et 2). Sur la fenêtre de l'indice 2025 (30 feux) : N = 2 donne 20 feux sur 30, soit **66,7 %** ; N = 3 donne 30 feux sur 30, soit **100 %**.
+
+**Ce qui change :**
+- **Le numérateur et la part :** + 10 feux, + 33,3 points, jusqu'à devenir égal au dénominateur.
+- **La lisibilité :** avec N = 3, plus aucun feu de la fenêtre n'est hors du groupe « bas » (aucun feu le seul jour de niveau 3 de 2025) : la part ne distingue plus rien, l'indicateur devient trivial.
+- **Le lien avec G2 :** G2 utilise exactement ce même effectif comme garde-fou (feux des jours de niveau < N). Si N monte ici, le garde-fou de G2 s'élargit aussi et devient moins sélectif.
+
+**Ce qui ne change pas :** la formule, l'unité, la source et les champs, le grain (un feu), la période, la définition d'un feu (décision 006).
 
 ### RACER
 
 | Critère | Jugement |
 |---|---|
-| Relevant | |
-| Accepted | |
-| Credible | |
-| Easy | |
-| Robust | |
+| Relevant | Oui : répond directement à la remarque de la direction sur des feux combattus les jours où l'indice était au plus bas (`kpi/diagnostic.md`) |
+| Accepted | À confirmer par le groupe : l'hypothèse G3 n'est pas encore tranchée, et [N] dépend du résultat de G2 |
+| Credible | Fragile pour l'instant : un seul jour de niveau 3 observé en 2025 et aucune autre année croisable, donc toute lecture au-delà de « niveau 1 contre niveau 2 » reste limitée |
+| Easy | Oui pour l'effectif global, une seule jointure département + jour ; plus coûteux pour les points communs, la cause étant inconnue pour la moitié des feux de niveau bas |
+| Robust | Faible : repose sur une seule saison réellement exploitable (2025, 30 feux) et sur une convention de jointure (`niveau_j1` = J+1) non confirmée par la documentation |
 
 ### Détournement, garde-fou, risque résiduel
 
+- **Détournement :** confondre « feux les jours d'indice bas » avec « feux que l'indice n'a pas annoncés » — ce n'est pas la même chose, et ça dépend du N choisi. On pourrait aussi gonfler le « point commun » en choisissant la cause, la commune ou la période après avoir vu les résultats (par exemple ne retenir que Fontainebleau, déjà la commune la plus touchée toutes conditions confondues).
+- **Garde-fou :** toujours citer le N utilisé à côté du résultat. Comparer le sous-groupe « jours bas » à l'ensemble des feux de la même fenêtre : sur 2025, Fontainebleau fait 43 % de tous les feux de la fenêtre contre 40 % des feux de niveau 1 seul — pas de différence nette, donc pas un point commun propre aux jours bas, plutôt le reflet de la concentration déjà connue par G1.
+- **Risque résiduel :** le très petit nombre de feux à niveau élevé (0 feu le seul jour de niveau 3 en 2025) empêche toute comparaison « bas » vs « haut » robuste. Une conclusion forte sur cette seule saison serait prématurée.
+
 ### Pre-mortem
+
+Dans un an, l'indicateur a fait prendre une mauvaise décision au SDIS (une mesure ciblée inutile, ou qui manque la vraie cause). Les raisons plausibles, de la plus probable et grave à la moins probable :
+
+| Rang | Raison | Probabilité | Gravité | Garde-fou |
+|---|---|---|---|---|
+| 1 | Le point commun trouvé (par exemple Fontainebleau) n'est que le reflet de la concentration générale des feux du 77 (G1), pas quelque chose de propre aux jours d'indice bas : la mesure ciblée ferait double emploi avec ce que G1 propose déjà | Haute | Haute | Comparer systématiquement le sous-groupe « jours bas » à l'ensemble de la fenêtre (déjà fait ci-dessus pour la commune) ; ne retenir un point commun que s'il diverge nettement de la répartition générale |
+| 2 | La conclusion repose sur une seule saison exploitable (2025, 30 feux, dont 10 seulement à cause connue) : en 2026 ou 2027, avec plus de jours de niveau 2-3, le même calcul donnerait un point commun différent | Haute | Moyenne | Recalculer chaque année dès la campagne BDIFF suivante publiée ; ne pas figer la mesure ciblée avant d'avoir au moins deux saisons avec un vrai contraste de niveaux |
+| 3 | Le décalage d'un jour (`niveau_j1` = J+1, convention déduite et non confirmée) a classé certains feux dans le mauvais niveau, faussant le partage « bas »/« haut » | Moyenne | Moyenne | Pas de garde-fou pour l'instant : à faire confirmer par Météo-France ou par Aboubacrine avant de publier un résultat définitif |
 
 ---
 
