@@ -61,3 +61,13 @@ Une entrée par décision. Les entrées 001 à 005 sont des propositions issues 
 - **Coût :** les petits feux hors forêt (haies, champs, bords de route) sortent du périmètre. Ce n'est plus un biais de mesure mais une limite écrite : nos chiffres ne parlent que des feux de forêt. Pour élargir plus tard, il faudrait les relevés du SDIS 77 sur ses interventions « feu de végétation ».
 - **Date :** 2026-11-19
 - **Auteurs :** décision du groupe (Aboubacrine, Iris, Daryl, Harold)
+
+## 007 — G4 : comparer le 77 à l'Île-de-France seulement
+
+- **Question :** G4, à niveau d'indice égal, le 77 a-t-il plus ou moins de feux que les autres départements ?
+- **Manque :** pour comparer à toute la France, il faudrait les feux de la BDIFF de tous les départements. L'export du groupe ne couvre que la zone de défense Île-de-France (2024-2025).
+- **Décision :** limiter la comparaison à l'Île-de-France.
+- **Raison :** choix du groupe de rester sur notre région, celle de la commande.
+- **Coût :** la partie « comment nous nous situons par rapport au reste du territoire national » de la commande reste sans réponse : c'est une limite à écrire. La comparaison régionale est fragile : 3 feux dans le 78 et le 91 sur 2024-2025, aucun dans le 95, et un nombre de feux inconnu pour 75, 92, 93 et 94 (BSPP).
+- **Date :** 2026-11-19
+- **Auteurs :** décision du groupe (Aboubacrine, Iris, Daryl, Harold)
