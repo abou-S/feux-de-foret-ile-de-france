@@ -51,3 +51,13 @@ Une entrée par décision. Les entrées 001 à 005 sont des propositions issues 
 - **Coût :** le croisement se fait à la date et au département, pas à l'endroit exact du feu. Si Copernicus est inexploitable dans le temps du projet, on renonce à G5 ou on se limite au niveau de synthèse de la Météo des forêts, qui n'est pas la valeur des indices.
 - **Date :** 2026-11-17
 - **Auteurs :** Aboubacrine Seck (proposition, à valider par le groupe)
+
+## 006 — Un départ de feu = un feu de forêt (une fiche BDIFF)
+
+- **Question :** toutes les questions qui comptent des feux (G1 à G5), et en particulier l'indicateur G2 (taux de jours d'alerte sans feu).
+- **Manque :** la commande parle à la fois de « feux de forêt » et de « départs de feu » sans les définir. La BDIFF ne garde que les feux de forêt. Les interventions SIS comptent tous les « feux de végétations » (champs, haies, bords de route), mais seulement en total par an. Sans règle, le nombre de feux change selon la source.
+- **Décision :** un départ de feu est un feu de forêt, c'est-à-dire une fiche de la BDIFF.
+- **Raison :** la commande porte sur la saison des feux de forêt, et le dispositif renforcé (patrouilles, guet) vise les massifs forestiers. La BDIFF est la seule source qui donne chaque feu avec sa date et sa commune.
+- **Coût :** les petits feux hors forêt (haies, champs, bords de route) sortent du périmètre. Ce n'est plus un biais de mesure mais une limite écrite : nos chiffres ne parlent que des feux de forêt. Pour élargir plus tard, il faudrait les relevés du SDIS 77 sur ses interventions « feu de végétation ».
+- **Date :** 2026-11-19
+- **Auteurs :** décision du groupe (Aboubacrine, Iris, Daryl, Harold)
