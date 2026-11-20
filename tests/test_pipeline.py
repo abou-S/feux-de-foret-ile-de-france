@@ -48,3 +48,13 @@ def test_gold_ne_garde_pas_d_anciennes_tables(tmp_path):
     run(racine)
     assert not (ancien / 'seuils_fwi.csv').exists()
     assert not (racine / 'data' / 'gold' / 'seuils_fwi.parquet').exists()
+
+
+def test_csv_au_format_francais(tmp_path):
+    """Séparateur « ; » et décimales avec une virgule : lisibles par un Power BI en français sans réglage."""
+    racine = copie_projet(tmp_path)
+    run(racine)
+    lignes = (racine / 'data' / 'gold' / 'csv' / 'points_meteo.csv').read_text(encoding='utf-8-sig').splitlines()
+    assert lignes[0] == 'id_point;latitude;longitude;commune;code_departement'
+    assert lignes[1].split(';')[1] == '48,197'          # latitude avec une virgule
+    assert lignes[1].split(';')[0] == '48.197_2.800'    # l'identifiant (texte) ne change pas

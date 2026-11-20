@@ -11,54 +11,86 @@ Ce guide part des fichiers de `data/gold/` (produits par le pipeline) jusqu'au t
 
 1. **Windows** avec **Power BI Desktop** (gratuit, sur le Microsoft Store).
 2. Récupérer le dépôt à jour : `git pull` sur `main`.
-3. Vérifier que `data/gold/` contient bien 7 fichiers `.parquet` :
+3. Vérifier que `data/gold/csv/` contient bien 7 fichiers `.csv` :
    `calendrier`, `departements`, `communes`, `points_meteo`, `feux_de_foret`, `suivi_journalier_departement`, `danger_journalier_point_meteo`.
+
+Les mêmes tables existent aussi en Parquet dans `data/gold/`. Ce guide utilise les **CSV**.
 
 Vous n'avez pas besoin de Python : gold est déjà dans le dépôt.
 
 ---
 
-## Étape 1 — Charger les 7 tables
+## Étape 1 — Charger les 7 fichiers CSV
 
-### 1.1 Créer un paramètre pour le dossier
+### 1.1 Le format des fichiers
 
-Le chemin du dossier change d'un ordinateur à l'autre. On le met dans un paramètre pour ne le changer qu'à un seul endroit.
+Les CSV sont au **format français** : séparateur **point-virgule** (`;`), décimales avec une **virgule** (`13,93`), dates en `2024-01-01`. Un Power BI en français les lit directement, **aucun réglage n'est nécessaire**.
 
-1. **Accueil → Transformer les données** (Power Query s'ouvre).
-2. **Gérer les paramètres → Nouveau paramètre**.
-3. Nom : `DossierGold`. Type : **Texte**. Valeur : le chemin complet du dossier, par exemple `C:\Users\vous\feux-de-foret-ile-de-france\data\gold\`. Le `\` final compte.
+### 1.2 Charger chaque fichier
 
-### 1.2 Charger chaque table
+Pour chacun des 7 fichiers de `data/gold/csv/` :
 
-Pour chacune des 7 tables : **Nouvelle source → Requête vide**, puis dans la barre de formule :
+1. **Accueil → Obtenir les données → Texte/CSV**, choisir le fichier.
+2. Dans la fenêtre d'aperçu, vérifier :
+   - **Origine du fichier : 65001 : Unicode (UTF-8)** (sinon les accents s'affichent mal : « Ã‰ » au lieu de « É ») ;
+   - **Délimiteur : Point-virgule**.
+3. Cliquer sur **Transformer les données** (pas « Charger » : il faut vérifier les types, étape 1.3).
 
-```
-= Parquet.Document(File.Contents(DossierGold & "feux_de_foret.parquet"))
-```
-
-Renommez la requête exactement comme le fichier (`feux_de_foret`, etc.), puis recommencez pour les 6 autres.
-
-Le connecteur **Obtenir les données → Parquet** fonctionne aussi, mais il faut alors coller le chemin de chaque fichier, sans le paramètre.
+La table prend le nom du fichier (`feux_de_foret`, etc.) : gardez ces noms.
 
 ### 1.3 Vérifier les types dans Power Query
 
-Avant de fermer Power Query, vérifiez l'icône de type en tête des colonnes :
+Power BI devine les types tout seul et se trompe sur les codes : `77` devient un nombre, `2016-688` peut devenir une date. Corrigez avec l'icône en tête de chaque colonne :
 
-| Colonnes | Type attendu |
+| Colonnes | Type à mettre |
 |---|---|
 | `date` (dans toutes les tables) | **Date** (pas Date/Heure) |
-| `code_departement`, `code_insee`, `id_point`, `id_feu` | **Texte** (sinon les codes perdent leur forme) |
+| `code_departement`, `code_insee`, `id_point`, `id_feu` | **Texte** (obligatoire : ce sont des codes, pas des nombres) |
 | `nb_feux`, `niveau_mdf_j1`, `surface_m2`, `annee`, `mois` | **Nombre entier** |
-| `fwi`, `fwi_moyen`, `fwi_max`, `ffmc`, `dmc`, `dc`, `isi`, `bui`, `fwi_departement` | **Nombre décimal** |
-| `jour_avec_feu`, `feux_connus`, `saison_indice` | **Vrai/Faux** |
+| `fwi`, `fwi_moyen`, `fwi_max`, `ffmc`, `dmc`, `dc`, `isi`, `bui`, `fwi_departement`, `latitude`, `longitude` | **Nombre décimal** |
+| `jour_avec_feu`, `feux_connus`, `saison_indice` | **Vrai/Faux** (les fichiers contiennent `True` et `False`, Power BI les convertit) |
 
-⚠️ **Ne remplacez jamais les valeurs vides (`null`) par 0.** Une case vide veut dire « on ne sait pas » (départements de la BSPP, année 2026, jours hors saison).
+Si Power Query a ajouté une étape « Type modifié » automatique, vous pouvez la supprimer et poser les types vous-même.
+
+⚠️ **Les cases vides des CSV deviennent `null` : ne les remplacez jamais par 0.** Une case vide veut dire « on ne sait pas » (départements de la BSPP, année 2026, jours hors saison).
 
 **Fermer et appliquer.**
+
+### 1.4 (Conseillé) Rendre le dossier modifiable en un seul endroit
+
+Chaque table garde le chemin complet de son fichier. Si le dossier change de place, il faut le corriger 7 fois. Pour l'éviter :
+1. **Transformer les données → Gérer les paramètres → Nouveau paramètre** : nom `DossierGold`, type **Texte**, valeur le chemin du dossier `csv`, par exemple `C:\Users\vous\feux-de-foret-ile-de-france\data\gold\csv\` (avec le `\` final).
+2. Dans chaque table, étape **Source**, remplacer le chemin écrit en dur par `DossierGold & "feux_de_foret.csv"` (avec le bon nom de fichier).
 
 ---
 
 ## Étape 2 — Construire le modèle (les relations)
+
+Voici le modèle à obtenir. Les **listes** (en haut et sur les côtés) filtrent les **tables de suivi** (au milieu). Les trois tables de suivi ne se touchent jamais : elles se croisent toujours par `calendrier` et `departements`.
+
+```
+                                          ┌────────────────┐
+                                          │   calendrier   │  liste des jours (2016-2026)
+                                          │   date (clé)   │
+                                          └───────┬────────┘
+                       ┌──────────────────────────┼──────────────────────────────┐
+                       │ date                     │ date                         │ date
+                       ▼                          ▼                              ▼
+┌──────────────┐ ┌───────────────┐ ┌──────────────────────────────┐ ┌───────────────────────────────┐ ┌──────────────┐
+│   communes   │ │ feux_de_foret │ │ suivi_journalier_departement │ │ danger_journalier_point_meteo │ │ points_meteo │
+│ code_insee ──┼▶│  un feu       │ │ un jour × un département     │ │ un jour × un point météo      │◀┼── id_point   │
+└──────────────┘ └───────▲───────┘ └──────────────▲───────────────┘ └───────────────────────────────┘ └──────────────┘
+                         │ code_departement       │ code_departement
+                         └────────────┬───────────┘
+                             ┌────────┴─────────┐
+                             │   departements   │  les 8 départements d'Île-de-France
+                             │ code_departement │
+                             └──────────────────┘
+
+   ──▶  relation « 1 à plusieurs » : la liste (côté 1) filtre la table de suivi (côté plusieurs)
+```
+
+Le même schéma, dessiné automatiquement, est dans `pipeline/README.md` (s'affiche sur GitHub).
 
 1. **Fichier → Options → Chargement des données :** décochez « Détecter automatiquement les nouvelles relations » (sinon Power BI en invente de mauvaises).
 2. Vue **Modèle** : supprimez toute relation créée automatiquement.

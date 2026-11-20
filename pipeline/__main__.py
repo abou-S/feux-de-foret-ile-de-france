@@ -19,7 +19,7 @@ def _ecrire(df: pd.DataFrame, dossier: Path, nom: str, csv: bool = True) -> None
     df.to_parquet(dossier / f'{nom}.parquet', index=False)
     if csv:
         (dossier / 'csv').mkdir(exist_ok=True)
-        df.to_csv(dossier / 'csv' / f'{nom}.csv', index=False, encoding='utf-8-sig')  # marque UTF-8 pour Power BI
+        df.to_csv(dossier / 'csv' / f'{nom}.csv', index=False, sep=';', decimal=',', encoding='utf-8-sig')  # format français, marque UTF-8
 
 
 def run(racine: Path = RACINE) -> dict[str, int]:
