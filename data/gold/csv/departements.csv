@@ -1,0 +1,9 @@
+﻿code_departement,nom,service,feux_connus
+75,Paris,BSPP,False
+77,Seine-et-Marne,SDIS,True
+78,Yvelines,SDIS,True
+91,Essonne,SDIS,True
+92,Hauts-de-Seine,BSPP,False
+93,Seine-Saint-Denis,BSPP,False
+94,Val-de-Marne,BSPP,False
+95,Val-d'Oise,SDIS,True
