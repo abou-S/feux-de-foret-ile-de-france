@@ -1,8 +1,20 @@
 # Glossaire — Île-de-France
 
-Dernière mise à jour : 2026-11-19
+Dernière mise à jour : 2026-11-20
 
 Les termes sont classés par ordre alphabétique, une section par terme. Toute modification passe par un ticket et une pull request relue par le chef de projet. On ne supprime jamais un terme : on le marque « obsolète », avec la raison et la date.
+
+## Choisir la définition de référence
+
+Quand deux sources ou deux personnes ne donnent pas le même sens à un terme :
+1. on écrit chaque sens dans « Divergences », avec la source ;
+2. on choisit la définition de référence, dans cet ordre de priorité : ce que veut dire la commande du SDIS, puis un texte réglementaire, puis la définition du producteur de la donnée utilisée, puis une décision du groupe ;
+3. on note la décision dans le journal des décisions et on met son numéro dans « Règle retenue » ;
+4. le pipeline applique cette définition (les données qui ne la respectent pas sont corrigées ou écartées), et le statut passe à « validé ».
+
+Exemple : « départ de feu » et « feu de végétation » ne comptent pas la même chose. La définition de référence est celle de la BDIFF, un feu de forêt (décision 006) ; les feux de végétation des statistiques SIS ne sont pas chargés dans l'entrepôt.
+
+Chaque entrée indique aussi son **registre** (terme technique, métier, administratif, acronyme, nom propre, convention du projet), son **contexte d'usage** et ses **synonymes**.
 
 ## BSPP (Brigade de sapeurs-pompiers de Paris)
 
@@ -14,6 +26,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** interventions SIS 2024, BSPP : 223 feux de végétations pour Paris et la petite couronne.
 - **Statut :** validé
 - **Origine de la définition :** description du jeu « Interventions réalisées par les services d'incendie et de secours » sur data.gouv.fr.
+- **Registre :** acronyme ; nom propre (unité militaire de sapeurs-pompiers)
+- **Contexte d'usage :** sécurité civile à Paris et dans la petite couronne ; fichiers interventions SIS et BDIFF
+- **Synonymes, antonymes, à distinguer :** synonyme : Brigade de sapeurs-pompiers de Paris. À distinguer : SDIS (les autres départements)
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
 ## Build-up Index (BUI / `fbupinx`) — Indice d'accumulation de sécheresse
@@ -26,6 +41,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** 
 - **Statut :** à vérifier.
 - **Origine de la définition :** Description de la variable Build-up index sur la fiche Copernicus CEMS.
+- **Registre :** acronyme ; terme technique (système canadien de l'indice Forêt-Météo)
+- **Contexte d'usage :** fichiers Copernicus (`fbupinx`), question G5
+- **Synonymes, antonymes, à distinguer :** synonymes : BUI, indice d'accumulation, ICD (indice de combustible disponible) chez Météo-France
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## Départ de feu
@@ -38,6 +56,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** BDIFF, fiche 2025-694, Pont-Scorff (56), alerte le 01/01/2025 à 01h08.
 - **Statut :** proposé
 - **Origine de la définition :** page « Définitions » du portail BDIFF, puis proposition du groupe.
+- **Registre :** terme métier (pompiers)
+- **Contexte d'usage :** commande du SDIS, BDIFF, toutes les questions qui comptent des feux
+- **Synonymes, antonymes, à distinguer :** synonyme dans le projet : feu de forêt (décision 006). À distinguer : incendie en cours, intervention
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
 ## Département
@@ -50,6 +71,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** 77 = Seine-et-Marne.
 - **Statut :** à vérifier
 - **Origine de la définition :** fichiers des trois sources, à confirmer avec le COG de l'INSEE.
+- **Registre :** terme administratif
+- **Contexte d'usage :** code INSEE dans les trois sources, filtres du tableau de bord
+- **Synonymes, antonymes, à distinguer :** synonymes : code département, `num_dep`, `code_departement`. À distinguer : territoire d'un service d'incendie (la BSPP couvre 4 départements)
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
 ## Dispositif renforcé
@@ -62,6 +86,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :**  « patrouilles » et le « guet » ; 
 - **Statut :** à vérifier.
 - **Origine de la définition :** Message de commande du SDIS transmis au groupe ; non défini par Copernicus CEMS.
+- **Registre :** terme métier (SDIS)
+- **Contexte d'usage :** commande du SDIS : ce qu'on déclenche à partir du seuil
+- **Synonymes, antonymes, à distinguer :** synonymes : renfort, patrouilles et guet (ses composantes). Antonyme : dispositif ordinaire
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## Drought Code (DC / `drtcode`) — Indice de sécheresse profonde
@@ -74,6 +101,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** .
 - **Statut :** à vérifier.
 - **Origine de la définition :** Description de Drought code sur la fiche Copernicus CEMS.
+- **Registre :** acronyme ; terme technique (système canadien)
+- **Contexte d'usage :** fichiers Copernicus (`drtcode`), question G5
+- **Synonymes, antonymes, à distinguer :** synonymes : DC, indice de sécheresse (IS chez Météo-France)
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## Duff Moisture Code (DMC / `dufmcode`) — Indice d'humidité de la couche organique intermédiaire
@@ -86,6 +116,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** 
 - **Statut :** à vérifier.
 - **Origine de la définition :** Description de Duff moisture code sur la fiche Copernicus CEMS, complétée par l'extrait fourni dans la conversation.
+- **Registre :** acronyme ; terme technique (système canadien)
+- **Contexte d'usage :** fichiers Copernicus (`dufmcode`), question G5
+- **Synonymes, antonymes, à distinguer :** synonymes : DMC, indice d'humus (IH chez Météo-France)
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## `fdsrte` — Indice quotidien de sévérité des incendies
@@ -98,6 +131,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** Valeur réelle non vérifiée.
 - **Statut :** à vérifier
 - **Origine de la définition :** Documentation Copernicus CEMS.
+- **Registre :** nom de variable technique
+- **Contexte d'usage :** fichiers Copernicus, question G5
+- **Synonymes, antonymes, à distinguer :** synonymes : DSR, Daily Severity Rating, indice de sévérité journalière
 - **Ajouté par :** Daryl William Fabo, 2026-11-19.
 
 ## Feu de forêt
@@ -110,6 +146,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** .
 - **Statut :** à vérifier.
 - **Origine de la définition :** Formulation de la commande du SDIS ; limites établies à partir de l'objet du jeu Copernicus CEMS.
+- **Registre :** terme métier ; défini par la BDIFF
+- **Contexte d'usage :** BDIFF, commande du SDIS, toutes les questions
+- **Synonymes, antonymes, à distinguer :** synonyme : incendie de forêt ; dans le projet, départ de feu (décision 006). À distinguer : feu de végétation, plus large
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## Feu de végétation
@@ -122,6 +161,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** SIS 2024, Seine-et-Marne : 225.
 - **Statut :** à vérifier
 - **Origine de la définition :** déduite du nom de la colonne, pas confirmée par la documentation.
+- **Registre :** terme métier (pompiers)
+- **Contexte d'usage :** statistiques des interventions SIS (colonne `Feux de végétations`)
+- **Synonymes, antonymes, à distinguer :** synonyme : feu d'espace naturel. À distinguer : feu de forêt (qui en est une partie)
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
 ## Fine Fuel Moisture Code (FFMC / `ffmcode`) — Indice d'humidité des combustibles fins
@@ -134,6 +176,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** 
 - **Statut :** à vérifier.
 - **Origine de la définition :** Description de Fine fuel moisture code sur la fiche Copernicus CEMS et extrait détaillé fourni dans la conversation.
+- **Registre :** acronyme ; terme technique (système canadien)
+- **Contexte d'usage :** fichiers Copernicus (`ffmcode`), question G5
+- **Synonymes, antonymes, à distinguer :** synonymes : FFMC, ICL (indice de combustible léger) chez Météo-France
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## Fire Danger Index (FDI) — Indice de danger d'incendie
@@ -146,6 +191,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** .
 - **Statut :** à vérifier.
 - **Origine de la définition :** Description de Fire danger index sur la fiche Copernicus CEMS.
+- **Registre :** acronyme ; terme technique
+- **Contexte d'usage :** fichiers Copernicus (colonne à confirmer), question G5
+- **Synonymes, antonymes, à distinguer :** synonyme : FDI, indice de danger d'incendie (système différent du FWI, à vérifier)
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## Fire Weather Index (FWI / `fwinx`) — Indice forêt-météo
@@ -158,6 +206,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** 
 - **Statut :** à vérifier.
 - **Origine de la définition :** Description de Fire weather index sur la fiche Copernicus CEMS.
+- **Registre :** acronyme ; terme technique (système canadien)
+- **Contexte d'usage :** fichiers Copernicus (`fwinx`), seuil de déclenchement (décision 008), questions G2 à G5
+- **Synonymes, antonymes, à distinguer :** synonymes : FWI, IFM (indice Forêt-Météo) chez Météo-France
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## Indice
@@ -169,6 +220,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Unité ou granularité :** Dépend de l'indice ; FDI et FWI sont affichés sans unité, à résolution quotidienne et spatiale quadrillée.
 - **Exemple :**
 - **Origine de la définition :** Message du SDIS et intitulés des variables de Copernicus CEMS.
+- **Registre :** langage courant, ambigu
+- **Contexte d'usage :** commande du SDIS (« l'indice annonce un danger élevé »)
+- **Synonymes, antonymes, à distinguer :** peut désigner le niveau de la Météo des forêts ou l'IFM : à faire préciser par le SDIS
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## `infsinx` — Indice de propagation initiale
@@ -181,6 +235,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** Valeur réelle non vérifiée.
 - **Statut :** à vérifier
 - **Origine de la définition :** Documentation Copernicus CEMS.
+- **Registre :** nom de variable technique
+- **Contexte d'usage :** fichiers Copernicus, question G5
+- **Synonymes, antonymes, à distinguer :** synonymes : ISI, Initial Spread Index, IPI (indice de propagation initiale) chez Météo-France
 - **Ajouté par :** Daryl William Fabo, 2026-11-19.
 
 ## Jour avec feu
@@ -193,6 +250,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** le 77 a un feu le 08/04/2025 (Le Vaudoué, 04h07) : jour avec feu.
 - **Statut :** proposé
 - **Origine de la définition :** proposition du groupe.
+- **Registre :** convention du projet
+- **Contexte d'usage :** question G2, colonne `jour_avec_feu` de l'entrepôt
+- **Synonymes, antonymes, à distinguer :** synonyme : jour de départ de feu. Antonyme : jour sans feu. Vide quand on ne sait pas (BSPP, 2026)
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
 ## Météo des forêts
@@ -205,6 +265,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** 
 - **Statut :** à vérifier.
 - **Origine de la définition :** Message de commande du SDIS ; absence de définition équivalente identifiée sur la fiche Copernicus.
+- **Registre :** nom propre (produit Météo-France)
+- **Contexte d'usage :** commande du SDIS, question G2
+- **Synonymes, antonymes, à distinguer :** synonymes : MdF, carte du danger feux. À distinguer : Vigilance météo, indicateurs opérationnels envoyés aux SDIS
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
 
 ## Niveau de danger (Météo des forêts)
@@ -217,6 +280,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** Seine-et-Marne, 17/06/2026 : niveau 2.
 - **Statut :** à vérifier (sens de niveau_j1 et niveau_j2 non confirmé par la documentation)
 - **Origine de la définition :** présentation PDF de Météo-France, jointe au jeu « Archives de la Météo des forêts ».
+- **Registre :** terme technique (échelle Météo-France)
+- **Contexte d'usage :** Météo des forêts, colonne `niveau_mdf_j1`
+- **Synonymes, antonymes, à distinguer :** synonymes : niveau, classe de danger. Valeurs : faible, modéré, élevé, très élevé (vert, jaune, orange, rouge)
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
 ## Saison de feux
@@ -229,6 +295,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** MdF 2025 : du 03/06/2025 au 30/09/2025.
 - **Statut :** à vérifier
 - **Origine de la définition :** fichiers des archives et présentation PDF de Météo-France.
+- **Registre :** langage métier
+- **Contexte d'usage :** commande du SDIS (« printemps et été »), période de l'indice
+- **Synonymes, antonymes, à distinguer :** synonymes : saison estivale ; « campagne » dans la BDIFF (une année). Antonyme : hors saison
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
 ## Seuil de déclenchement
@@ -241,6 +310,9 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** non disponible.
 - **Statut :** à vérifier
 - **Origine de la définition :** mail de la direction du SDIS 77.
+- **Registre :** terme métier ; décision
+- **Contexte d'usage :** question G2, curseur du tableau de bord
+- **Synonymes, antonymes, à distinguer :** synonymes : seuil d'alerte, niveau de déclenchement, N dans les fiches
 - **Ajouté par :** Aboubacrine Seck, 2026-11-17
 
 ## Spread Component (SC) — Composante de propagation
@@ -253,4 +325,7 @@ Les termes sont classés par ordre alphabétique, une section par terme. Toute m
 - **Exemple :** Aucune valeur réelle inspectée ; à compléter après consultation des observations.
 - **Statut :** à vérifier.
 - **Origine de la définition :** Description de Spread component sur la fiche Copernicus CEMS.
+- **Registre :** acronyme ; terme technique (système américain)
+- **Contexte d'usage :** fichiers Copernicus (colonne à confirmer), question G5
+- **Synonymes, antonymes, à distinguer :** synonymes : SC, composante de propagation
 - **Ajouté par :** Daryl William Fabo, 2026-11-17.
