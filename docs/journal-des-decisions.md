@@ -71,3 +71,16 @@ Une entrée par décision. Les entrées 001 à 005 sont des propositions issues 
 - **Coût :** la partie « comment nous nous situons par rapport au reste du territoire national » de la commande reste sans réponse : c'est une limite à écrire. La comparaison régionale est fragile : 3 feux dans le 78 et le 91 sur 2024-2025, aucun dans le 95, et un nombre de feux inconnu pour 75, 92, 93 et 94 (BSPP).
 - **Date :** 2026-11-19
 - **Auteurs :** décision du groupe (Aboubacrine, Iris, Daryl, Harold)
+
+## 008 — G2 : répondre sur la Météo des forêts, recommander un seuil sur le FWI Copernicus
+
+- **Question :** G2, à partir de quel niveau déclencher le dispositif renforcé ?
+- **Manque :** la Météo des forêts n'est archivée que depuis 2024 et n'est publiée que de juin à septembre. On ne peut la croiser avec les feux que sur 2024-2025, et le 77 n'y dépasse presque jamais le niveau 1. De plus, Météo-France précise que la Météo des forêts « n'est pas destinée aux services d'incendie et de secours » (« 10 questions pour comprendre la Météo des forêts », 2024).
+- **Décision :** on répond à la question posée avec la Météo des forêts (notebook 01). En complément, on recommande un seuil sur le FWI de Copernicus (indice Forêt-Météo, le même que l'IFM utilisé par Météo-France), disponible toute l'année et sur plusieurs années.
+  - Seuils candidats fixés d'avance : les bornes des classes EFFIS présentes dans le 77, 11,2 (début de « modéré ») et 21,3 (début d'« élevé »). Des valeurs intermédiaires sont montrées pour information seulement.
+  - Valeur du 77 : moyenne des points de la grille, comparée au point le plus proche de Fontainebleau, où les feux sont concentrés.
+  - Validation : quand 2016-2023 sera disponible (#46), calage sur 2016-2022 et test sur 2023-2025.
+- **Raison :** dix saisons et toute l'année au lieu de deux étés ; un indice continu qui permet de comparer le coût (jours de déclenchement) et les deux erreurs pour chaque seuil ; un indice proche de l'outil opérationnel de Météo-France.
+- **Coût :** le FWI Copernicus est une reconstitution après coup sur des points espacés d'environ 30 km, pas la prévision de la veille : un seuil trouvé sur Copernicus ne se transpose pas tel quel dans l'IFM opérationnel. Il faudra le présenter en termes relatifs et le faire traduire par Météo-France.
+- **Date :** 2026-11-20
+- **Auteurs :** Aboubacrine Seck (proposition, à valider par le groupe)
