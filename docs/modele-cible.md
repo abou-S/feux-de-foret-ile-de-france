@@ -6,7 +6,7 @@ Notre modèle de données local : ce qu'on prend dans chaque source, où on le r
 
 ## 1. Le modèle
 
-Sept tables, reliées par le jour, le département, la commune et le point de grille :
+Sept tables, reliées par le jour, le département, la commune et le point de grille. Elles sont rangées dans l'entrepôt DuckDB `data/gold/entrepot.duckdb` (une base SQL en un seul fichier, sans serveur), et copiées en Parquet et en CSV pour Power BI :
 
 ```
                                    calendrier

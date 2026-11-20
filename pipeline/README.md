@@ -4,7 +4,7 @@ Consolide les sources en trois couches (conception : `CONCEPTION.md`) :
 
 - **bronze** (`data/bronze/`) : les fichiers bruts, jamais modifiés ;
 - **silver** (`data/silver/`, local) : une table propre par source, après les règles de qualité ; lignes rejetées dans `data/silver/rejets/` ;
-- **gold** (`data/gold/`, versionné) : le schéma en étoile lu par Power BI.
+- **gold** (`data/gold/`, versionné) : le schéma en étoile lu par Power BI, en trois formats : Parquet, CSV (`csv/`) et l'entrepôt DuckDB (`entrepot.duckdb`).
 
 ## Lancer
 
@@ -14,6 +14,22 @@ pip install -r requirements.txt
 python -m pipeline             # reconstruit silver et gold
 pytest                         # tests
 ```
+
+## Interroger l'entrepôt en SQL
+
+`data/gold/entrepot.duckdb` contient les 7 tables gold. DuckDB est une base SQL dans un seul fichier, sans serveur :
+
+```python
+import duckdb
+con = duckdb.connect('data/gold/entrepot.duckdb', read_only=True)
+con.sql("""
+    SELECT d.nom, count(*) AS feux
+    FROM feux_de_foret f JOIN departements d USING (code_departement)
+    GROUP BY d.nom ORDER BY feux DESC
+""")
+```
+
+Ou en ligne de commande avec le client DuckDB : `duckdb data/gold/entrepot.duckdb`.
 
 Si une règle « bloquer » échoue, le chargement s'arrête avant gold et le détail est dans `data/rapport_qualite.md`.
 

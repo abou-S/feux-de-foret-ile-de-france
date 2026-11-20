@@ -2,7 +2,7 @@
 
 Ces fichiers sont produits par `python -m pipeline` et lus par Power BI. Ils sont **propres et prêts à relier**, mais ne contiennent **aucune analyse** : les seuils, taux et comparaisons se calculent dans Power BI.
 
-- Format : une copie **CSV** de chaque table dans `csv/`, au format français (séparateur `;`, décimales avec une virgule, UTF-8), à utiliser dans Power BI ; et un fichier **Parquet** par table dans ce dossier.
+- Format : une copie **CSV** de chaque table dans `csv/`, au format français (séparateur `;`, décimales avec une virgule, UTF-8), à utiliser dans Power BI ; un fichier **Parquet** par table dans ce dossier ; et l'entrepôt **DuckDB** `entrepot.duckdb`, qui contient les 7 tables pour les interroger en SQL.
 - Zone : **Île-de-France** seulement (décision 007).
 - Schéma dessiné et relations à créer : `pipeline/README.md`.
 

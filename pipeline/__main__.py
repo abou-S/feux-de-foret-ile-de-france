@@ -1,4 +1,4 @@
-"""Lance le pipeline : bronze → silver → contrôles de qualité → gold.  Usage : python -m pipeline"""
+"""Lance le pipeline : bronze → silver → contrôles de qualité → gold (Parquet, CSV et entrepôt DuckDB).  Usage : python -m pipeline"""
 import hashlib
 import sys
 from datetime import datetime
@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from pipeline import gold, qualite, silver
+from pipeline import entrepot, gold, qualite, silver
 from pipeline.sources import RACINE, fichiers, lire_bdiff, lire_copernicus, lire_meteo_des_forets
 
 
@@ -73,6 +73,7 @@ def run(racine: Path = RACINE) -> dict[str, int]:
         ancien.unlink()
     for nom, df in tables.items():
         _ecrire(df, data / 'gold', nom)
+    entrepot.charger(tables, data / 'gold' / 'entrepot.duckdb')
 
     horodatage = datetime.now().isoformat(timespec='seconds')
     nb_rejets = len(rejets_feux) + len(rejets_dep) + len(rejets_points)
