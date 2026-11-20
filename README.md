@@ -84,7 +84,7 @@ Pour le tableau de bord, pas besoin de Python : les CSV de `data/gold/csv/` sont
 
 ## L'équipe
 
-- Aboubacrine Seck, chef de projet
+- Aboubacrine Seck
 - Iris Pouth
 - Daryl William Fabo
 - Harold
