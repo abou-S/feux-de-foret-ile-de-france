@@ -17,7 +17,7 @@ Ce qu'il nous faudrait pour répondre complètement aux questions (`docs/sources
 | La surface boisée par département | G4 | BD Forêt ou Corine Land Cover n'ont pas été ouverts | La comparaison entre départements n'est pas rapportée à leur forêt (décision 004) |
 | Les feux de végétation hors forêt (champs, haies) | toutes | La BDIFF ne garde que les feux de forêt ; les statistiques SIS n'ont ni jour ni commune | Hors périmètre : un départ de feu = un feu de forêt (décision 006) |
 | Le découpage du 77 en secteurs de centres de secours | G3 | Aucune source ouverte | Pas de seuil par secteur (décision 003) |
-| La cause de plus de la moitié des feux | G3 | Le champ `Nature` est vide pour 166 feux sur 291 | L'analyse des causes porte sur 125 feux ; c'est une limite à afficher |
+| La cause de plus de la moitié des feux | G3 | Le champ `Nature` est vide pour 166 feux sur 291 en Île-de-France (132 sur 251 dans le 77) | L'analyse des causes porte sur 125 feux en Île-de-France (119 dans le 77) ; c'est une limite à afficher |
 | La position exacte des feux (routes, habitations) | G3 | Pas de coordonnées dans la BDIFF | Question écartée |
 | Le seuil actuel et le budget du SDIS | G2 | Absents de la commande | Questions à poser au SDIS. En attendant, le tableau de bord propose un « menu par budget » |
 | Les indicateurs opérationnels que Météo-France envoie aux SDIS | G2 | Non publics ; la Météo des forêts « n'est pas destinée aux SDIS » | À demander au SDIS : si c'est cet indice qu'utilisent ses chefs de centre, le seuil doit porter dessus |
