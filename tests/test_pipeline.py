@@ -58,3 +58,32 @@ def test_csv_au_format_francais(tmp_path):
     assert lignes[0] == 'id_point;latitude;longitude;commune;code_departement'
     assert lignes[1].split(';')[1] == '48,197'          # latitude avec une virgule
     assert lignes[1].split(';')[0] == '48.197_2.800'    # l'identifiant (texte) ne change pas
+
+
+def test_entrepot_duckdb(tmp_path):
+    """L'entrepôt DuckDB contient les 7 tables gold, avec le même nombre de lignes."""
+    import duckdb
+    racine = copie_projet(tmp_path)
+    lignes = run(racine)
+    con = duckdb.connect(str(racine / 'data' / 'gold' / 'entrepot.duckdb'), read_only=True)
+    tables = {t for (t,) in con.execute('SHOW TABLES').fetchall()}
+    assert tables == set(lignes)
+    for table, n in lignes.items():
+        assert con.execute(f'SELECT count(*) FROM {table}').fetchone()[0] == n
+    # Un jour, pas une date et heure
+    types_date = con.execute("SELECT DISTINCT data_type FROM information_schema.columns WHERE column_name = 'date'").fetchall()
+    assert types_date == [('DATE',)]
+    # Les vides restent vides (inconnu), jamais 0
+    assert con.execute("SELECT count(*) FROM suivi_journalier_departement WHERE code_departement = '75' AND nb_feux IS NOT NULL").fetchone()[0] == 0
+    con.close()
+
+
+def test_entrepot_reconstruit(tmp_path):
+    """Relancer le pipeline remplace l'entrepôt au lieu d'ajouter des lignes."""
+    import duckdb
+    racine = copie_projet(tmp_path)
+    run(racine)
+    lignes = run(racine)
+    con = duckdb.connect(str(racine / 'data' / 'gold' / 'entrepot.duckdb'), read_only=True)
+    assert con.execute('SELECT count(*) FROM feux_de_foret').fetchone()[0] == lignes['feux_de_foret']
+    con.close()
