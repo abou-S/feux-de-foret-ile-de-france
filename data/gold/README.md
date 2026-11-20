@@ -37,7 +37,7 @@ communes ──── feux_de_foret   suivi_journalier_departement   danger_jour
 
 | Colonne | Type | Ce que c'est | Vide quand… |
 |---|---|---|---|
-| `id_feu` | texte | identifiant du feu : année et numéro BDIFF (ex. `2025-694`) | jamais |
+| `id_feu` | texte | identifiant du feu : année et numéro BDIFF (ex. `2025-21228`) | jamais |
 | `date` | date | jour de la première alerte | jamais |
 | `code_insee` | texte | commune où le feu est parti (relie à `communes`) | jamais |
 | `code_departement` | texte | département du feu (`77`, `78`, `91`, `95`) | jamais |
