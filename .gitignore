@@ -219,8 +219,10 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Données : seule la couche bronze (sources brutes) est partagée.
-# Le reste de data/ (silver, gold, .env, fichiers de travail) reste local.
+# Données : bronze (sources brutes) et gold (lu par Power BI) sont partagés.
+# silver, .env et les fichiers de travail restent locaux.
 /data/*
 !/data/README.md
 !/data/bronze/
+!/data/gold/
+!/data/rapport_qualite.md
