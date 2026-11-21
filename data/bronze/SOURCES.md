@@ -11,6 +11,15 @@ Pour vérifier qu'un fichier n'a pas été modifié : `shasum -a 256 <fichier>`,
 | `meteo_des_forets/mdf_2024.csv` | Archives de la Météo des forêts, Météo-France (data.gouv.fr) | Téléchargement de https://meteofrance.s3.sbg.io.cloud.ovh.net/data/BULLETIN/MDF/mdf_2024.csv.gz, décompressé | 2026-11-19 | `53c1b0d89633afd3dbae17004affca64998654d77db7047e0abd607a8f2d6568` |
 | `meteo_des_forets/mdf_2025.csv` | Idem | Idem, `mdf_2025.csv.gz` | 2026-11-19 | `383c34692ed322c5ef14ef8b5c02c7b03d07c08a060eeeda2a98f0586313e15a` |
 | `meteo_des_forets/mdf_2026.csv` | Idem | Idem, `mdf_2026.csv.gz` | 2026-11-19 | `5542af01679987c277edb49ccaf6651dc0b7dd6e1f76a91c152b1fd0a8dc05b3` |
+| `copernicus/copernicus_2024_77.csv` | Copernicus CEMS (EWDS), `cems-fire-historical-v1` | Extraction GRIB ERA5 (2024, 366 jours, emprise IdF) filtrée sur les 6 points de grille du 77, avec `commune_77` associée (9 indices : 7 FWI canadiens + `fdimrk`, `buinfdr`) | 2026-11-19 | `4936b183ffa25a13dc7ac6eab778ed603a2e6b3ab16b5c6779c1fabe3c9af6ee` |
+| `copernicus/copernicus_2024_idf.csv` | Idem | Idem, 13 points de grille en Île-de-France (départements 77, 78, 91, 94, 95) | 2026-11-19 | `ec0400f47699f7b8f06040f3cb3bceb7aae60add9718d77c646491c86406bd63` |
+| `copernicus/copernicus_2024_idf_dept_jour.csv` | Idem | Moyenne simple quotidienne par département calculée depuis `copernicus_2024_idf.csv` (5 départements) | 2026-11-19 | `257acdaa5146b0f906eec140ec1e70ce9435e7c513a1a8300897bf9a0a850e2a` |
+| `copernicus/copernicus_2025_77.csv` | Idem | Idem, année 2025 (365 jours, 6 points du 77, 9 indices) | 2026-11-19 | `f19691e9e39cfb332ef47c935fb05c7b4d7f4577e8ada41b9fb50d4959211e82` |
+| `copernicus/copernicus_2025_idf.csv` | Idem | Idem, année 2025 (13 points IdF) | 2026-11-19 | `bbfa1182e8dff57fd5125e381530e97208dba17340fc47657a5c22b5d6894237` |
+| `copernicus/copernicus_2025_idf_dept_jour.csv` | Idem | Moyenne simple quotidienne par département, 2025 | 2026-11-19 | `81390ad4b272380a3b1d40139fdb8b4cbcb3d9f2464897b406f0b978cd0c18dc` |
+| `copernicus/copernicus_2026_77.csv` | Idem | Idem, année 2026 jusqu'au 2026-08-31 (243 jours, 6 points du 77, 7 indices FWI canadiens uniquement) | 2026-11-19 | `408f49e44406b5739332d4ca7ef24cb9738ea881bb8d18e43561bf5daaf57921` |
+| `copernicus/copernicus_2026_idf.csv` | Idem | Idem, année 2026 jusqu'au 2026-08-31 (13 points IdF, 7 indices) | 2026-11-19 | `89e64a2d1792ada199e11054c9df99a633dee5cd42a780b6530288db747ef092` |
+| `copernicus/copernicus_2026_idf_dept_jour.csv` | Idem | Moyenne simple quotidienne par département, 2026 jusqu'au 2026-08-31 | 2026-11-19 | `625c86573616d5ab0819ec736e7ef88a5871e79aa52ecf13812357e9968a1cb0` |
 
 ## Ce qu'il faut savoir avant de les lire
 
@@ -20,7 +29,19 @@ Pour vérifier qu'un fichier n'a pas été modifié : `shasum -a 256 <fichier>`,
   - 2025 : séparateur `,`, colonne `dep_nom`.
   - 2026 : séparateur `;`, colonne `nom_dep`.
   - Dans les trois, `num_dep` n'a pas de zéro devant (`1` et non `01`), et `date` est l'heure de publication en UTC.
-- **Licences :** Licence Ouverte v2.0 (fiches data.gouv.fr). Aucune donnée personnelle.
+- **Copernicus CEMS (FWI) :** séparateur `,`, encodage UTF-8, pas de lignes d'information avant l'en-tête. Données quotidiennes à `12:00 UTC` (`valid_time`), issues du jeu `cems-fire-historical-v1` sur le portail EWDS (https://ewds.climate.copernicus.eu/datasets/cems-fire-historical-v1), utilisées pour recommander un seuil sur le FWI (voir décision 008).
+  - **Paramètres de requête EWDS :**
+    - `dataset` : `cems-fire-historical-v1`
+    - `product_type` : `reanalysis` (`dataset_type`: `consolidated_dataset`, `system_version`: `4_1`)
+    - `variable` : les 7 indices du système canadien FWI présents sur toute la série (`2024-2026`) : `fire_weather_index` (`fwinx`), `build_up_index` (`fbupinx`), `drought_code` (`drtcode`), `duff_moisture_code` (`dufmcode`), `fine_fuel_moisture_code` (`ffmcode`), `fire_daily_severity_rating` (`fdsrte`), `initial_fire_spread_index` (`infsinx`). Les fichiers `2024` et `2025` contiennent aussi `fdimrk` (McArthur) et `buinfdr` (NFDRS), absents en `2026`.
+    - `year` : `2024` à `2026` (`2026` s'arrête au `2026-08-31`), tous les mois (`01` à `12`) et tous les jours (`01` à `31`).
+    - Sous-ensemble spatial appliqué après lecture GRIB : `48.1 <= latitude <= 49.1` et `1.6 <= longitude <= 3.6`, puis filtrage géométrique sur les contours administratifs d'Île-de-France.
+  - **Grille spatiale et agrégation départementale :**
+    - Les GRIB source utilisent la **grille gaussienne réduite ERA5 (N320)** (dimension `values`, pas en latitude ~0,281° / ~28–30 km, pas en longitude 0,40° à 48,76°N et 0,417° à 49,04°N).
+    - **13 points de grille** tombent en Île-de-France : **6 dans le 77** (Étrépilly, Neufmoutiers-en-Brie, Choisy-en-Brie, Féricy, Paroy, Chaintreaux), 2 dans le 78 (Saint-Martin-la-Garenne, Trappes), 2 dans le 91 (Richarville, Videlles), 1 dans le 94 (Thiais) et 2 dans le 95 (Cergy, Louvres).
+    - **75, 92 et 93 ont 0 point de grille :** la Petite Couronne (~48,80°–48,96°N) tombe entièrement dans l'intervalle entre deux rangées de latitudes N320 (`48.7588°N` et `49.0398°N`). Aucun centre de maille ne s'y trouve ; ces trois départements sont donc absents des fichiers `*_idf.csv` et `*_idf_dept_jour.csv`.
+    - Les fichiers `copernicus_<annee>_idf_dept_jour.csv` contiennent la **moyenne simple** (arithmétique, non pondérée, float64 sans arrondi) par `(time, code_departement)` des points de grille situés dans chaque département.
+- **Licences :** Licence Ouverte v2.0 pour BDIFF et Météo des forêts (fiches data.gouv.fr). Licence Copernicus CEMS / EWDS pour les indices FWI (usage libre avec mention de la source : *Generated using Copernicus Emergency Management Service information*). Aucune donnée personnelle.
 
 ## Mettre à jour un fichier
 
