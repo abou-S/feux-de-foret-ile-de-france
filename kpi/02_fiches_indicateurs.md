@@ -315,37 +315,79 @@ Situation de référence : [x %] à mesurer, mais non interprétable sur l'Île-
 
 ## Fiche G5 — Indices météo détaillés (Copernicus) — Daryl
 
+Indicateur : **part des jours d'alerte Copernicus avec feu**.
+
 ### Fiche d'indicateur
 
 | Rubrique | Valeur |
 |---|---|
-| Question et objectif | |
-| Formule : numérateur | |
-| Formule : dénominateur | |
-| Unité | |
-| Paramètres | |
-| Périmètre, période, granularité, fréquence | |
-| Source et champs | |
-| Lignes utilisables | |
-| Proxy et biais | |
-| Décision éclairée | |
-| Propriétaire | |
+| Question et objectif | Question G5 : quelles conditions météo (FWI, DC, DMC, FFMC) ont été associées aux départs de feu et aux incendies les plus importants dans le 77 ? Objectif (`kpi/objectifs.md`) : trouver, avant le 11 décembre 2026, au moins un indice détaillé qui sépare les jours avec feu des jours sans feu dans le 77 avec au moins [x points] de précision en plus que le niveau 1-4 de la Météo des forêts (`27,3 %` pour `N >= 2` sur `2024-2025`) à nombre de jours d'alerte égal (`K = 22`). *(Action hors commande initiale du SDIS.)* |
+| Formule : numérateur | Nombre de jours d'alerte Copernicus dans le 77 (`I_max >= S`, avec `I_max = max` quotidien des `6` points de grille dans le 77) ayant enregistré au moins 1 départ de feu BDIFF (`Date de première alerte`, un départ de feu = une fiche BDIFF, décision 006), sur la période étudiée |
+| Formule : dénominateur | Nombre total de jours d'alerte Copernicus dans le 77 (`I_max >= S`) sur la même période, calibré à budget d'alerte égal à la Météo des forêts (`K = 22` jours pour `N >= 2` sur `2024-2025`, comparé aux seuils fixes EFFIS) |
+| Unité | % de jours avec feu parmi les jours d'alerte (comparé en points de pourcentage aux `6 / 22 = 27,3 %` de la Météo des forêts sur `2024-2025`) |
+| Paramètres | Indice `I` parmi `{FFMC (ffmcode), DMC (dufmcode), FWI (fwinx), DC (drtcode)}` (`FFMC` et `FWI` testés en principal). Règle d'agrégation des `6` points du 77 : `max` quotidien retenu (évite de diluer un pic sur Fontainebleau sous le nord du département) ; `mean` testée en sensibilité. Seuil `S` calibré au Top-22 sur la fenêtre MdF `2024-2025` (`ffmcode_max >= 90,55`, `fwinx_max >= 24,64`), et comparé sur l'année complète (`731` j) ainsi qu'au seuil EFFIS élevé (`fwinx_max >= 21,3`) |
+| Périmètre, période, granularité, fréquence | Seine-et-Marne (77), sans secteur (décision 003). Période croisable avec BDIFF et Météo des forêts : `2024-2025` (`731` jours calendaires, dont `240` jours dans la fenêtre MdF `04/06-01/10`) ; Copernicus `2026` disponible jusqu'au `31/08/2026` (`243` j, sans BDIFF 2026 ; mises à jour EWDS suspendues depuis le `16/11/2026`). Granularité : un jour × le département 77. Fréquence : annuelle, après diffusion BDIFF (N-1) |
+| Source et champs | Copernicus EWDS (`cems-fire-historical-v1`, GRIB N320 convertis en CSV dans `data/bronze/copernicus/copernicus_2024..2026_77.csv`) : `time` (horodatage `00:00 UTC` dans le GRIB, midi solaire local selon GEFF), `latitude`, `longitude`, `ffmcode` (FFMC), `dufmcode` (DMC), `fwinx` (FWI), `drtcode` (DC) ; jointure spatiale sur les `507` communes du 77 (`6` points retenus sur `23` en IDF : Étrépilly, Neufmoutiers-en-Brie, Choisy-en-Brie, Féricy, Paroy, Chaintreaux). BDIFF (`data/bronze/bdiff/incendies_idf_2024_2025.csv`, confirmé sur `Incendies.csv` 2016-2025) : `Département`, `Date de première alerte`, `Numéro`, `Nom de la commune`, `Surface parcourue (m2)`. Référence G2 (`data/bronze/meteo_des_forets/mdf_2024.csv`, `mdf_2025.csv`) : `date` (+ 1 j), `num_dep`, `niveau_j1` |
+| Lignes utilisables | Copernicus 77 : `2 196 / 2 196` lignes en 2024 (`366 j × 6 pts`), `2 190 / 2 190` en 2025 (`365 j × 6 pts`), `1 458 / 1 458` en 2026 (`01/01-31/08/2026`, `243 j × 6 pts`, sans `fdimrk`/`buinfdr`), `0` NaN sur les 4 indices. BDIFF 77 (`2024-2025`) : `65 / 65` feux (`56` jours de feu, `39 957 m²`), `0` NaN sur date, commune et surface ; dont `36` feux (`30` jours de feu, `8 842 m²`) sur les `240` jours MdF (`04/06-01/10`) et `29` feux hors fenêtre (`31 115 m²`, dont `21` feux / `31 097 m²` avant le `03/06/2025`) |
+| Proxy et biais | Voir ci-dessous |
+| Décision éclairée | Si un indice Copernicus dépasse nettement la Météo des forêts à budget égal et reste stable hors échantillon, il éclaire le choix d'un sous-indice déclencheur (ex. sécheresse de surface `FFMC` vs danger global `FWI`, et extension au printemps) ; sinon, conserver l'indice Météo des forêts et ne pas calibrer un seuil opérationnel sur un gain fragile |
+| Propriétaire | Calcul : Daryl. Relecture : [responsable qualité et conformité] |
+
+**Proxy et biais**
+
+| Terme sans champ | Proxy utilisé | Biais | Sens |
+|---|---|---|---|
+| « Risque météo sur le 77 » | `max` quotidien des 6 points de grille dans le 77 | Maille large N320 (`~0,28°` de latitude, 6 points seulement, aucun sur le centre exact de Fontainebleau) ; le `max` passe tout le 77 en alerte dès qu'un point au sud monte | Surestime le risque au nord quand seul le sud chauffe, mais évite de rater un pic local au sud |
+| « Feu important » | `Surface parcourue (m2)` (BDIFF) | `194 / 251` surfaces de la BDIFF sont estimées (`77 %`, fiche G1), pas mesurées au GPS ; la surface dépend aussi du délai d'intervention | Ordre de grandeur seulement |
+| « Jour avec feu » | `Date de première alerte` d'une fiche BDIFF type `F` (décision 006) | Exclut les feux de végétation hors forêt (champs, haies, broussailles), et les départs accidentels ou humains surviennent même par indice bas | Sous-estime le nombre total de départs combustibles |
+| « Comparaison à Météo des forêts » | Top-K (`K = 22` jours sur `240` j) comparé à `niveau_j1 >= 2` (`date + 1 j`) | Compare une réanalyse météo a posteriori (ERA5/GEFF) à une prévision publiée la veille (`niveau_j1`), sur deux saisons seulement dont `2024` presque sans alerte | Peut avantager artificiellement Copernicus face à la prévision J+1 |
 
 ### Changer un paramètre
+
+On compare les choix d'indice, d'agrégation spatiale et de fenêtre sur `2024-2025` (référence Météo des forêts `N >= 2` sur `240` j d'été : `6` jours avec feu sur `22`, soit **`27,3 %`** de précision et **`5,9 %`** de la surface captée) :
+
+- **Changer d'indice à budget égal (`K = 22` j, `max` des 6 points, fenêtre MdF `240` j) :**
+  - `FFMC` (`ffmcode_max >= 90,55`) : **`9 / 22 = 40,9 %`** (`+13,6` pts vs MdF), `13 / 36` feux, `14,1 %` de la surface d'été captée.
+  - `DMC` (`dufmcode_max >= 57,50`) : `7 / 22 = 31,8 %` (`+4,5` pts), `11 / 36` feux, `6,0 %` de la surface.
+  - `FWI` (`fwinx_max >= 24,64`) : `7 / 22 = 31,8 %` (`+4,5` pts), `11 / 36` feux, **`33,1 %`** de la surface d'été captée.
+  - `DC` (`drtcode_max >= 516,50`) : `3 / 22 = 13,6 %` (`-13,6` pts), `4 / 36` feux, `10,2 %` de la surface (l'inertie de la sécheresse profonde décale les alertes vers la fin d'été).
+- **Passer du `max` à la `moyenne` (`mean`) et passer à l'année complète (`731` j) :**
+  - Au seuil EFFIS élevé (`FWI >= 21,3` sur `731` j), `fwinx_max` donne `13 / 39 = 33,3 %` et capte **`83,2 %` de la surface totale (`39 957 m²`)**, contre `6 / 22 = 27,3 %` et **`7,1 %`** pour `fwinx_mean` : la moyenne rate le plus gros feu (`30 000 m²` le `16/05/2025` à Fontainebleau, où Féricy vaut `22,20` mais le nord ramène la moyenne à `20,62`).
+  - À budget `K = 22` sur `731` j, `ffmcode_max >= 90,76` donne `8 / 22 = 36,4 %` (`+9,1` pts vs MdF) mais ne capte que `3,1 %` de la surface (`96,9 %` manquée hors alerte, dont le `16/05/2025`).
+
+**Ce qui change :**
+- **La précision et le classement des indices :** `FFMC` (combustibles fins de surface) maximise la précision sur les départs estivaux, tandis que `FWI` (`>= 21,3`, `max`) capte beaucoup mieux les grosses surfaces, surtout au printemps.
+- **La surface manquée hors alerte :** basculer sur la `moyenne` ou plafonner à `22` jours sur toute l'année laisse passer l'essentiel des surfaces brûlées.
+
+**Ce qui ne change pas :** la formule (taux de jours d'alerte avec feu), l'unité (`%`), la granularité (jour × 77), la définition d'un feu BDIFF (décision 006), les sources et la liste des `6` points de grille dans le 77.
 
 ### RACER
 
 | Critère | Jugement |
 |---|---|
-| Relevant | |
-| Accepted | |
-| Credible | |
-| Easy | |
-| Robust | |
+| Relevant | Oui pour éclairer les limites de la Météo des forêts (printemps non couvert et rôle des composantes `FFMC`/`FWI`), bien que G5 soit hors de la commande initiale du SDIS (`kpi/diagnostic.md`). |
+| Accepted | À confirmer avec le SDIS et le groupe, car l'agrégation `max` déclenche tout le 77 sur un pic local au sud et les seuils Copernicus ne sont pas utilisés aujourd'hui en caserne. |
+| Credible | Fragile en l'état : les gains mesurés reposent sur `2025` seul (`2024` n'a que `2` jours `ffmcode_max >= 90,55` sans feu), sans validation hors échantillon ni stricte équivalence entre réanalyse ERA5 et prévision J+1. |
+| Easy | Moyen : rapide une fois les GRIB découpés en CSV sur le 77, mais l'extraction initiale depuis Copernicus EWDS (`~1,28 Go/an`) exige `cfgrib`/`eccodes` et les mises à jour sont suspendues depuis le `16/11/2026`. |
+| Robust | Faible : choisir l'indice et le seuil `S` après avoir observé les `65` feux de `2024-2025` expose fortement au surapprentissage sur une seule saison. |
 
 ### Détournement, garde-fou, risque résiduel
 
+- **Détournement :** choisir l'indice, la règle d'agrégation ou le seuil `S` *a posteriori* pour afficher une précision élevée, ou monter `S` sur les tout derniers extrêmes (à `K = 1` jour avec `fwinx_max >= 43,93`, on affiche **`100 %`** sur `1` seul jour de feu de `201 m²` en ratant **`99,5 %`** de la surface brûlée). Même biais en mettant en avant la seule précision sur les départs estivaux de `FFMC` sans montrer qu'au budget `K = 22` sur l'année complète (`731` j), `ffmcode_max >= 90,76` rate **`96,9 %` de la surface brûlée** (dont le feu de `30 000 m²` du `16/05/2025`).
+- **Garde-fou :** un contrepoids orthogonal mesurant la gravité manquée et non la fréquence des alertes : la **part de la surface parcourue (`Surface parcourue (m2)`) survenue hors jours d'alerte** (`85,9 %` sur les `240` j d'été et `96,9 %` sur `731` j pour `FFMC` Top-22, contre `66,9 %` sur l'été pour `FWI` Top-22 et **`16,8 %`** sur `731` j pour `fwinx_max >= 21,3`). Combiné à un budget minimum de jours d'alerte comparé à G2 (`K >= 20` j sur la période) et à l'obligation de confirmer tout seuil sur au moins deux saisons sèches distinctes.
+- **Risque résiduel :** l'indicateur compare une réanalyse météo historique à maille large (`0,28°`) aux seuls feux de forêt saisis dans la BDIFF (type `F`, décision 006), et non une prévision opérationnelle J+1 sur tous les feux de végétation ; les départs purement accidentels par temps frais restent impossibles à anticiper par un indice météo (`2024-07-12`, `2 000 m²` avec `fwinx_max = 1,65`).
+
 ### Pre-mortem
+
+Dans un an, l'indicateur a conduit à une mauvaise recommandation (adoption d'un seuil Copernicus peu fiable ou maintien d'une vigilance aveugle hors été). Les trois raisons plausibles, classées :
+
+| Rang | Raison | Probabilité | Gravité | Garde-fou |
+|---|---|---|---|---|
+| 1 | Le gain de `FFMC` (`40,9 %` vs `27,3 %` pour Météo des forêts sur `2024-2025`) vient d'un surapprentissage sur la seule saison `2025` (`2024` n'a que `2` jours `ffmcode_max >= 90,55` sans feu) : sur `2026-2027`, l'écart disparaît | Haute | Haute | Recalculer l'écart sur `2026` dès publication de la BDIFF `2026` (`89` j MdF `>= 2` et `79` j `fwinx_max >= 21,3` déjà observés du `01/01` au `31/08/2026`) ; ne figer aucun seuil avant confirmation sur au moins deux saisons actives |
+| 2 | On retient `FFMC` pour sa précision sur les départs estivaux et on laisse passer les grands feux printaniers pilotés par le vent et l'ensemble `FWI`, comme le `16/05/2025` à Fontainebleau (`30 000 m²`, soit `75,1 %` de la surface `2024-2025`) | Moyenne | Haute | Contrepoids obligatoire affiché à côté de la précision : part de la surface parcourue hors jours d'alerte (`96,9 %` pour `FFMC` Top-22 sur l'année vs `16,8 %` pour `fwinx_max >= 21,3`) ; si ce taux dépasse `50 %`, le seuil seul est rejeté |
+| 3 | La réanalyse ERA5 (`cems-fire-historical-v1`) surestime la performance par rapport à une prévision J+1 réelle, et le service EWDS est suspendu depuis le `16/11/2026`, bloquant l'automatisation | Moyenne | Moyenne | Pas de garde-fou automatique dans les données actuelles : avant tout déploiement, tester sur prévisions archivées J+1 et vérifier la reprise du flux EWDS |
+
+Situation de référence : sur `2024-2025` (fenêtre Météo des forêts `240` j), Météo des forêts (`N >= 2`, `22` j) obtient **`27,3 %`** de jours d'alerte avec feu (`94,1 %` de la surface manquée), contre **`40,9 %`** (`+13,6` pts, `85,9 %` de surface manquée) pour `ffmcode_max >= 90,55` et **`31,8 %`** (`+4,5` pts, `66,9 %` de surface manquée) pour `fwinx_max >= 24,64` ; sur l'année complète (`731` j), `fwinx_max >= 21,3` (`39` j) atteint `33,3 %` avec `16,8 %` de surface manquée.
 
 ---
 
