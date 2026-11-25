@@ -42,19 +42,12 @@ def silver_meteo_des_forets(brut: pd.DataFrame) -> pd.DataFrame:
 INDICES = {'fwinx': 'fwi', 'ffmcode': 'ffmc', 'dufmcode': 'dmc', 'drtcode': 'dc', 'infsinx': 'isi', 'fbupinx': 'bui'}
 
 
-def silver_copernicus_departement(brut: pd.DataFrame) -> pd.DataFrame:
-    """Indices Copernicus par jour et par département (moyenne des points, calculée par Daryl)."""
-    s = brut.rename(columns={'time': 'date', **INDICES})
-    s['date'] = pd.to_datetime(s['date'])
-    s['code_departement'] = code_departement(s['code_departement'])
-    return s[['date', 'code_departement', *INDICES.values()]].reset_index(drop=True)
-
-
 def silver_copernicus_points(brut: pd.DataFrame) -> pd.DataFrame:
-    """FWI par jour et par point de la grille. Coordonnées arrondies : leurs décimales changent d'un fichier à l'autre."""
-    s = brut.rename(columns={'time': 'date', 'fwinx': 'fwi'})
+    """Indices Copernicus par jour et par point de la grille. Les moyennes et maximums par département se calculent
+    en gold à partir de ces points. Coordonnées arrondies : leurs décimales changent d'un fichier à l'autre."""
+    s = brut.rename(columns={'time': 'date', **INDICES})
     s['date'] = pd.to_datetime(s['date'])
     s['code_departement'] = code_departement(s['code_departement'])
     s['latitude'] = s['latitude'].round(3)
     s['longitude'] = s['longitude'].round(3)
-    return s[['date', 'code_departement', 'commune', 'latitude', 'longitude', 'fwi']].reset_index(drop=True)
+    return s[['date', 'code_departement', 'commune', 'latitude', 'longitude', *INDICES.values()]].reset_index(drop=True)
