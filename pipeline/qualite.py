@@ -30,7 +30,7 @@ def _jours_manquants(dates: pd.Series) -> int:
     return manquants
 
 
-def regles_silver(feux: pd.DataFrame, mdf: pd.DataFrame, cop_dep: pd.DataFrame, cop_points: pd.DataFrame) -> list[Resultat]:
+def regles_silver(feux: pd.DataFrame, mdf: pd.DataFrame, cop_points: pd.DataFrame) -> list[Resultat]:
     """Les 9 règles de pipeline/CONCEPTION.md, dans l'ordre du tableau."""
     deps_par_jour = mdf.groupby('date_concernee')['code_departement'].nunique()
     return [
@@ -44,11 +44,9 @@ def regles_silver(feux: pd.DataFrame, mdf: pd.DataFrame, cop_dep: pd.DataFrame, 
         Resultat('meteo_des_forets', 'niveau entre 1 et 4', 'bloquer', int((~mdf['niveau_j1'].isin([1, 2, 3, 4])).sum())),
         Resultat('meteo_des_forets', 'même nombre de départements chaque jour, aucun jour manquant dans la saison', 'alerter',
                  int((deps_par_jour < deps_par_jour.max()).sum()) + _jours_manquants(mdf['date_concernee'])),
-        Resultat('copernicus', 'un seul enregistrement par (jour, département) et par (jour, point)', 'bloquer',
-                 int(cop_dep.duplicated(['date', 'code_departement']).sum()
-                     + cop_points.duplicated(['date', 'latitude', 'longitude']).sum())),
-        Resultat('copernicus', 'FWI ≥ 0 (sinon rejet)', 'alerter',
-                 int((cop_dep['fwi'] < 0).sum() + (cop_points['fwi'] < 0).sum())),
+        Resultat('copernicus', 'un seul enregistrement par (jour, point)', 'bloquer',
+                 int(cop_points.duplicated(['date', 'latitude', 'longitude']).sum())),
+        Resultat('copernicus', 'FWI ≥ 0 (sinon rejet)', 'alerter', int((cop_points['fwi'] < 0).sum())),
     ]
 
 

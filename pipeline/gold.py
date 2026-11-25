@@ -23,18 +23,20 @@ def communes(feux: pd.DataFrame) -> pd.DataFrame:
             .rename(columns={'commune': 'nom'}).sort_values('code_insee').reset_index(drop=True))
 
 
-def suivi_journalier_departement(mdf: pd.DataFrame, cop_dep: pd.DataFrame, cop_points: pd.DataFrame,
-                          feux: pd.DataFrame) -> pd.DataFrame:
-    """Un jour × un département d'Île-de-France : niveau, indices, nombre de feux."""
+def _indices_departement(cop_points: pd.DataFrame) -> pd.DataFrame:
+    """Un jour × un département : moyenne simple et maximum de chaque indice sur les points du département.
+    La moyenne garde le nom court de l'indice (`ffmc`...), sauf le FWI (`fwi_moyen`)."""
+    p = cop_points[cop_points['code_departement'].isin(DEP_IDF)].groupby(['date', 'code_departement'])[['fwi', *INDICES]]
+    moyenne = p.mean().rename(columns={'fwi': 'fwi_moyen'})
+    maximum = p.max().add_suffix('_max')
+    return moyenne.join(maximum).reset_index()
+
+
+def suivi_journalier_departement(mdf: pd.DataFrame, cop_points: pd.DataFrame, feux: pd.DataFrame) -> pd.DataFrame:
+    """Un jour × un département d'Île-de-France : niveau, indices (moyenne et max des points), nombre de feux."""
     niveau = (mdf[mdf['code_departement'].isin(DEP_IDF)]
               .rename(columns={'date_concernee': 'date', 'niveau_j1': 'niveau_mdf_j1'})[['date', 'code_departement', 'niveau_mdf_j1']])
-    indices = (cop_dep[cop_dep['code_departement'].isin(DEP_IDF)]
-               .rename(columns={'fwi': 'fwi_moyen'})[['date', 'code_departement', 'fwi_moyen', *INDICES]])
-    fwi_max = (cop_points[cop_points['code_departement'].isin(DEP_IDF)]
-               .groupby(['date', 'code_departement'], as_index=False)['fwi'].max().rename(columns={'fwi': 'fwi_max'}))
-
-    t = niveau.merge(indices, on=['date', 'code_departement'], how='outer')
-    t = t.merge(fwi_max, on=['date', 'code_departement'], how='left')
+    t = niveau.merge(_indices_departement(cop_points), on=['date', 'code_departement'], how='outer')
 
     compte = feux.groupby(['date', 'code_departement']).size().rename('n').reset_index()
     t = t.merge(compte, on=['date', 'code_departement'], how='left')
@@ -42,14 +44,17 @@ def suivi_journalier_departement(mdf: pd.DataFrame, cop_dep: pd.DataFrame, cop_p
     t['nb_feux'] = pd.array(np.where(connu, t['n'].fillna(0), np.nan), dtype='Float64').astype('Int64')
     t['jour_avec_feu'] = (t['nb_feux'] > 0).astype('boolean')  # vide quand nb_feux est inconnu
 
-    colonnes = ['date', 'code_departement', 'niveau_mdf_j1', 'fwi_moyen', 'fwi_max', *INDICES, 'nb_feux', 'jour_avec_feu']
+    # Les colonnes *_max sont à la fin : le modèle Power BI lit les 12 premières colonnes par leur position.
+    colonnes = ['date', 'code_departement', 'niveau_mdf_j1', 'fwi_moyen', 'fwi_max', *INDICES, 'nb_feux', 'jour_avec_feu',
+                *[f'{i}_max' for i in INDICES]]
     return t[colonnes].sort_values(['date', 'code_departement']).reset_index(drop=True)
 
 
-def feux_de_foret(feux: pd.DataFrame, mdf: pd.DataFrame, cop_dep: pd.DataFrame) -> pd.DataFrame:
-    """Un feu, avec le niveau de la Météo des forêts et le FWI de son département ce jour-là (vides si inconnus)."""
+def feux_de_foret(feux: pd.DataFrame, mdf: pd.DataFrame, cop_points: pd.DataFrame) -> pd.DataFrame:
+    """Un feu, avec le niveau de la Météo des forêts et le FWI moyen de son département ce jour-là (vides si inconnus)."""
     niveau = mdf.rename(columns={'date_concernee': 'date', 'niveau_j1': 'niveau_mdf_j1'})[['date', 'code_departement', 'niveau_mdf_j1']]
-    fwi = cop_dep.rename(columns={'fwi': 'fwi_departement'})[['date', 'code_departement', 'fwi_departement']]
+    fwi = (_indices_departement(cop_points).rename(columns={'fwi_moyen': 'fwi_departement'})
+           [['date', 'code_departement', 'fwi_departement']])
     t = (feux.merge(niveau, on=['date', 'code_departement'], how='left')
          .merge(fwi, on=['date', 'code_departement'], how='left'))
     t['niveau_mdf_j1'] = t['niveau_mdf_j1'].astype('Int64')
@@ -82,7 +87,8 @@ def points_meteo(cop_points: pd.DataFrame) -> pd.DataFrame:
 
 
 def danger_journalier_point_meteo(cop_points: pd.DataFrame) -> pd.DataFrame:
-    """Un jour × un point de la grille : le FWI. Permet à Power BI d'étudier un point précis (ex. près de Fontainebleau)."""
+    """Un jour × un point de la grille : les indices. Permet à Power BI d'étudier un point précis (ex. près de Fontainebleau)."""
     p = cop_points[cop_points['code_departement'].isin(DEP_IDF)]
-    f = pd.DataFrame({'date': p['date'], 'id_point': _id_point(p['latitude'], p['longitude']), 'fwi': p['fwi']})
+    f = pd.DataFrame({'date': p['date'], 'id_point': _id_point(p['latitude'], p['longitude']),
+                      **{i: p[i] for i in ['fwi', *INDICES]}})
     return f.sort_values(['date', 'id_point']).reset_index(drop=True)
