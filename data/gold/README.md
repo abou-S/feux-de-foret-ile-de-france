@@ -60,15 +60,18 @@ Exemple réel : `2025-21228 | 2025-04-09 | 77186 | 77 | 380 | Estimées | Involo
 | `date` | date | le jour | jamais |
 | `code_departement` | texte | le département | jamais |
 | `niveau_mdf_j1` | entier | niveau de la Météo des forêts **prévu la veille** pour ce jour (1 à 4) | hors saison de l'indice (octobre à mai) |
-| `fwi_moyen` | décimal | FWI Copernicus : moyenne des points de la grille du département | pas de point Copernicus dans le département (75, 92, 93) ou pas de donnée ce jour-là |
+| `fwi_moyen` | décimal | FWI Copernicus : moyenne simple des points de la grille du département | pas de point Copernicus dans le département (75, 92, 93) ou pas de donnée ce jour-là |
 | `fwi_max` | décimal | FWI Copernicus : le point le plus dangereux du département ce jour-là | idem |
-| `ffmc` | décimal | sécheresse des petits combustibles en surface (facilité d'allumage) | idem |
-| `dmc` | décimal | sécheresse de la couche organique intermédiaire | idem |
-| `dc` | décimal | sécheresse profonde du sol (sécheresse longue) | idem |
-| `isi` | décimal | vitesse de propagation attendue (vent) | idem |
-| `bui` | décimal | combustible disponible | idem |
+| `ffmc` | décimal | sécheresse des petits combustibles en surface (facilité d'allumage), moyenne des points | idem |
+| `dmc` | décimal | sécheresse de la couche organique intermédiaire, moyenne des points | idem |
+| `dc` | décimal | sécheresse profonde du sol (sécheresse longue), moyenne des points | idem |
+| `isi` | décimal | vitesse de propagation attendue (vent), moyenne des points | idem |
+| `bui` | décimal | combustible disponible, moyenne des points | idem |
 | `nb_feux` | entier | nombre de feux partis ce jour-là dans le département | **inconnu** : départements de la BSPP (75, 92, 93, 94) et années sans BDIFF (2026) |
 | `jour_avec_feu` | vrai/faux | vrai si au moins un feu ce jour-là | **inconnu**, mêmes cas que `nb_feux` |
+| `ffmc_max`, `dmc_max`, `dc_max`, `isi_max`, `bui_max` | décimal | le même indice au point le plus dangereux du département ce jour-là | comme `fwi_max` |
+
+Les moyennes et les maximums sont calculés par le pipeline à partir des points de `danger_journalier_point_meteo`. Pour comparer les indices entre eux (G5), comparez des maximums entre eux, ou des moyennes entre elles. Les colonnes `*_max` sont à la fin du fichier pour ne pas décaler les colonnes déjà chargées dans Power BI.
 
 Plus le FWI est haut, plus le danger météorologique est fort. Il est continu et sans unité : dans le 77, il va de 0 à environ 40. Classes EFFIS de référence : moins de 11,2 faible ; 11,2 à 21,3 modéré ; 21,3 à 38 élevé ; 38 à 50 très élevé.
 
@@ -83,6 +86,7 @@ Plus le FWI est haut, plus le danger météorologique est fort. Il est continu e
 | `date` | date | le jour | jamais |
 | `id_point` | texte | le point (relie à `points_meteo`) | jamais |
 | `fwi` | décimal | FWI Copernicus à ce point ce jour-là | jamais |
+| `ffmc`, `dmc`, `dc`, `isi`, `bui` | décimal | les autres indices Copernicus à ce point ce jour-là | jamais |
 
 Pourquoi cette table : les feux du 77 sont concentrés autour de Fontainebleau (45 %), et la moyenne du département dilue le danger. Le point **`48.478_2.800` (Féricy)** est le plus proche de Fontainebleau (11 km) : c'est celui de la décision 008.
 

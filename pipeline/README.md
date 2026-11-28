@@ -43,7 +43,7 @@ Si une règle « bloquer » échoue, le chargement s'arrête avant gold et le d�
 | `feux_de_foret` | un feu (avec niveau Météo des forêts et FWI du jour) | G1, G3 |
 | `suivi_journalier_departement` | un jour × un département (niveau, FWI moyen et max, indices, nombre de feux, jour avec feu) | G2, G4, G5 |
 | `points_meteo` | un point de la grille Copernicus (13 en Île-de-France) | G2, G5 |
-| `danger_journalier_point_meteo` | un jour × un point (FWI) | G2, G5 |
+| `danger_journalier_point_meteo` | un jour × un point (FWI, FFMC, DMC, DC, ISI, BUI) | G2, G5 |
 
 Le pipeline **prépare** les données ; l'analyse (seuils, menu par budget, taux) se fait dans Power BI.
 
@@ -109,11 +109,21 @@ erDiagram
         float bui
         int nb_feux "vide si inconnu (BSPP, 2026)"
         bool jour_avec_feu "vide si inconnu"
+        float ffmc_max
+        float dmc_max
+        float dc_max
+        float isi_max
+        float bui_max
     }
     danger_journalier_point_meteo {
         date date FK
         string id_point FK
         float fwi
+        float ffmc
+        float dmc
+        float dc
+        float isi
+        float bui
     }
 ```
 

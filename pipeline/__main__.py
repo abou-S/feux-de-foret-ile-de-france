@@ -38,27 +38,25 @@ def run(racine: Path = RACINE) -> dict[str, int]:
     # Un même feu avec des valeurs différentes resterait en double et bloquerait la barrière (règle id_feu unique).
     feux = silver.silver_feux(lire_tout('bdiff/*.csv', lire_bdiff).drop_duplicates())
     mdf = silver.silver_meteo_des_forets(lire_tout('meteo_des_forets/mdf_*.csv', lire_meteo_des_forets))
-    cop_dep = silver.silver_copernicus_departement(lire_tout('copernicus/copernicus_*_idf_dept_jour.csv', lire_copernicus))
     cop_points = silver.silver_copernicus_points(lire_tout('copernicus/copernicus_*_idf.csv', lire_copernicus))
 
-    resultats = qualite.regles_silver(feux, mdf, cop_dep, cop_points)
+    resultats = qualite.regles_silver(feux, mdf, cop_points)
     (data / 'rapport_qualite.md').write_text(qualite.rapport_markdown(resultats), encoding='utf-8')
     qualite.barriere(resultats)
 
     feux, rejets_feux = qualite.separer_rejets(feux, feux['surface_m2'] < 0)
-    cop_dep, rejets_dep = qualite.separer_rejets(cop_dep, cop_dep['fwi'] < 0)
     cop_points, rejets_points = qualite.separer_rejets(cop_points, cop_points['fwi'] < 0)
     rejets = data / 'silver' / 'rejets'
     rejets.mkdir(parents=True, exist_ok=True)
-    for nom, df in [('feux', rejets_feux), ('copernicus_departement', rejets_dep), ('copernicus_points', rejets_points)]:
+    for nom, df in [('feux', rejets_feux), ('copernicus_points', rejets_points)]:
         df.to_csv(rejets / f'{nom}.csv', index=False, encoding='utf-8')
-    for nom, df in [('feux', feux), ('meteo_des_forets', mdf), ('copernicus_departement', cop_dep), ('copernicus_points', cop_points)]:
+    for nom, df in [('feux', feux), ('meteo_des_forets', mdf), ('copernicus_points', cop_points)]:
         _ecrire(df, data / 'silver', nom, csv=False)
 
     # Gold
-    fj = gold.suivi_journalier_departement(mdf, cop_dep, cop_points, feux)
+    fj = gold.suivi_journalier_departement(mdf, cop_points, feux)
     feux_idf = feux[feux['code_departement'].isin(gold.DEP_IDF)]
-    ff = gold.feux_de_foret(feux_idf, mdf, cop_dep)
+    ff = gold.feux_de_foret(feux_idf, mdf, cop_points)
     tables = {
         'calendrier': gold.calendrier(fj, ff, mdf),
         'departements': gold.departements(mdf),
@@ -76,7 +74,7 @@ def run(racine: Path = RACINE) -> dict[str, int]:
     entrepot.charger(tables, data / 'gold' / 'entrepot.duckdb')
 
     horodatage = datetime.now().isoformat(timespec='seconds')
-    nb_rejets = len(rejets_feux) + len(rejets_dep) + len(rejets_points)
+    nb_rejets = len(rejets_feux) + len(rejets_points)
     lignes_journal = pd.DataFrame([{'horodatage': horodatage, **j} for j in journal])
     lignes_journal['lignes_rejetees_total'] = nb_rejets
     chemin_journal = data / 'journal_chargement.csv'

@@ -46,7 +46,7 @@ A est retenue : c'est la plus simple pour la personne qui construit le tableau d
 Dans `data/bronze/`, décrites dans `data/bronze/SOURCES.md` :
 - BDIFF : `bdiff/Incendies_2016_2025.csv` (Île-de-France, 2016-2025) ;
 - Météo des forêts : `meteo_des_forets/mdf_2024.csv`, `mdf_2025.csv`, `mdf_2026.csv` ;
-- Copernicus : `copernicus/copernicus_AAAA_idf_dept_jour.csv` (moyenne par département et par jour) et `copernicus_AAAA_idf.csv` (les 13 points de la grille en Île-de-France, avec leur département). Les années 2016-2023 arriveront avec #46 : le pipeline prend toutes les années présentes.
+- Copernicus : `copernicus_AAAA_idf.csv` (les 13 points de la grille en Île-de-France, avec leur département). Les fichiers `copernicus_AAAA_idf_dept_jour.csv` (moyennes par département calculées à la main) ne sont plus lus : gold recalcule moyenne et maximum à partir des points (mêmes moyennes, vérifié le 2026-11-25). Les années 2016-2023 arriveront avec #46 : le pipeline prend toutes les années présentes.
 
 ## Silver : une table propre par source
 
@@ -54,8 +54,7 @@ Dans `data/bronze/`, décrites dans `data/bronze/SOURCES.md` :
 |---|---|---|
 | `feux` | un feu | en-tête cherché automatiquement (2 ou 3 lignes d'information), noms de colonnes en minuscules, dates typées, surfaces en nombres, `id_feu` = Année + Numéro |
 | `meteo_des_forets` | un jour × un département | séparateur et nom de colonne selon l'année, date de publication en UTC, `date_concernee` = date de publication en heure française + 1 jour, code département sur 2 caractères |
-| `copernicus_departement` | un jour × un département | indices renommés (`fwi`, `ffmc`, `dmc`, `dc`, `isi`, `bui`) |
-| `copernicus_points` | un jour × un point de la grille | coordonnées arrondies à 3 décimales (elles changent légèrement d'un fichier à l'autre) |
+| `copernicus_points` | un jour × un point de la grille | indices renommés (`fwi`, `ffmc`, `dmc`, `dc`, `isi`, `bui`), coordonnées arrondies à 3 décimales (elles changent légèrement d'un fichier à l'autre) |
 
 **Règles de qualité** (sélecteur, prédicat, seuil, décision), écrites comme des tests :
 
@@ -68,7 +67,7 @@ Dans `data/bronze/`, décrites dans `data/bronze/SOURCES.md` :
 | `meteo_des_forets` : un seul niveau par (jour, département) | bloquer |
 | `meteo_des_forets` : niveau entre 1 et 4 | bloquer |
 | `meteo_des_forets` : 96 départements chaque jour, aucun jour manquant dans la saison | alerter |
-| `copernicus` : un seul enregistrement par (jour, département) ou (jour, point) | bloquer |
+| `copernicus` : un seul enregistrement par (jour, point) | bloquer |
 | `copernicus` : FWI ≥ 0 | alerter, ligne en rejet |
 
 Une règle « bloquer » en échec arrête le pipeline avant gold. Les lignes rejetées vont dans `data/silver/rejets/`.
@@ -93,12 +92,12 @@ communes ─ feux_de_foret          suivi_journalier_departement ─ departement
 
 **feux_de_foret** (G1, G3) : `id_feu`, `date`, `code_insee`, `code_departement`, `surface_m2`, `precision_surface`, `cause`, `niveau_mdf_j1` du jour (vide hors saison), `fwi_departement` du jour.
 
-**suivi_journalier_departement** (G2, G4, G5) : `date`, `code_departement`, `niveau_mdf_j1` (vide hors saison), `fwi_moyen`, `fwi_max` (maximum des points du département), `ffmc`, `dmc`, `dc`, `isi`, `bui`, `nb_feux`, `jour_avec_feu` (vide quand `nb_feux` est inconnu).
+**suivi_journalier_departement** (G2, G4, G5) : `date`, `code_departement`, `niveau_mdf_j1` (vide hors saison), `fwi_moyen`, `fwi_max` (maximum des points du département), `ffmc`, `dmc`, `dc`, `isi`, `bui` (moyennes des points), `nb_feux`, `jour_avec_feu` (vide quand `nb_feux` est inconnu), puis `ffmc_max`, `dmc_max`, `dc_max`, `isi_max`, `bui_max` (maximums des points, à la fin pour ne pas décaler les colonnes lues par Power BI).
 - `nb_feux` est **vide** (inconnu) pour la BSPP et pour les années sans BDIFF (2026), **0** sinon quand aucun feu.
 
 **points_meteo** : `id_point`, `latitude`, `longitude`, `commune`, `code_departement` (les 13 points Copernicus en Île-de-France).
 
-**danger_journalier_point_meteo** (G2, G5) : `date`, `id_point`, `fwi`. Permet d'étudier dans Power BI un point précis, par exemple le plus proche de Fontainebleau (décision 008), au lieu de la moyenne du département.
+**danger_journalier_point_meteo** (G2, G5) : `date`, `id_point`, `fwi`, `ffmc`, `dmc`, `dc`, `isi`, `bui`. Permet d'étudier dans Power BI un point précis, par exemple le plus proche de Fontainebleau (décision 008), au lieu de la moyenne du département.
 
 **Dans Power BI, pas dans gold :** le menu par budget (seuil, feux couverts, jours payés pour rien), les taux et les comparaisons.
 

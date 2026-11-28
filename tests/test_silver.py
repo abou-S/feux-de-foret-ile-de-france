@@ -1,7 +1,6 @@
 import pandas as pd
 
-from pipeline.silver import (code_departement, silver_copernicus_departement, silver_copernicus_points,
-                             silver_feux, silver_meteo_des_forets)
+from pipeline.silver import code_departement, silver_copernicus_points, silver_feux, silver_meteo_des_forets
 
 
 def test_code_departement():
@@ -28,18 +27,21 @@ def test_silver_feux_id():
     assert s.loc[0, 'annee'] == 2025
 
 
-def test_copernicus_departement_renomme():
-    brut = pd.DataFrame({'time': ['2025-07-15'], 'code_departement': ['77'], 'fwinx': [21.7], 'ffmcode': [90.0],
+def test_copernicus_points_garde_tous_les_indices():
+    brut = pd.DataFrame({'time': ['2025-07-15'], 'code_departement': ['77'], 'commune': ['Féricy'],
+                         'latitude': [48.478], 'longitude': [2.8], 'fwinx': [21.7], 'ffmcode': [90.0],
                          'dufmcode': [30.0], 'drtcode': [400.0], 'infsinx': [5.0], 'fbupinx': [60.0]})
-    s = silver_copernicus_departement(brut)
-    assert list(s.columns) == ['date', 'code_departement', 'fwi', 'ffmc', 'dmc', 'dc', 'isi', 'bui']
+    s = silver_copernicus_points(brut)
+    assert list(s.columns) == ['date', 'code_departement', 'commune', 'latitude', 'longitude',
+                               'fwi', 'ffmc', 'dmc', 'dc', 'isi', 'bui']
+    assert s.loc[0, ['fwi', 'ffmc', 'dmc', 'dc', 'isi', 'bui']].tolist() == [21.7, 90.0, 30.0, 400.0, 5.0, 60.0]
     assert s.loc[0, 'date'] == pd.Timestamp('2025-07-15')
 
 
 def test_points_arrondis():
     brut = pd.DataFrame({'time': ['2024-07-01', '2025-07-01'], 'code_departement': ['77', '77'],
                          'commune': ['Féricy', 'Féricy'], 'latitude': [48.477732039271515, 48.47773203927152],
-                         'longitude': [2.8, 2.8], 'fwinx': [10.0, 12.0]})
+                         'longitude': [2.8, 2.8], 'fwinx': [10.0, 12.0], 'ffmcode': [80.0, 81.0],
+                         'dufmcode': [5.0, 6.0], 'drtcode': [100.0, 110.0], 'infsinx': [2.0, 3.0], 'fbupinx': [8.0, 9.0]})
     s = silver_copernicus_points(brut)
     assert s['latitude'].unique().tolist() == [48.478]
-    assert list(s.columns) == ['date', 'code_departement', 'commune', 'latitude', 'longitude', 'fwi']
