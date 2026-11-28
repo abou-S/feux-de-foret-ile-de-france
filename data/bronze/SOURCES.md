@@ -11,6 +11,12 @@ Pour vérifier qu'un fichier n'a pas été modifié : `shasum -a 256 <fichier>`,
 | `meteo_des_forets/mdf_2024.csv` | Archives de la Météo des forêts, Météo-France (data.gouv.fr) | Téléchargement de https://meteofrance.s3.sbg.io.cloud.ovh.net/data/BULLETIN/MDF/mdf_2024.csv.gz, décompressé | 2026-11-19 | `53c1b0d89633afd3dbae17004affca64998654d77db7047e0abd607a8f2d6568` |
 | `meteo_des_forets/mdf_2025.csv` | Idem | Idem, `mdf_2025.csv.gz` | 2026-11-19 | `383c34692ed322c5ef14ef8b5c02c7b03d07c08a060eeeda2a98f0586313e15a` |
 | `meteo_des_forets/mdf_2026.csv` | Idem | Idem, `mdf_2026.csv.gz` | 2026-11-19 | `5542af01679987c277edb49ccaf6651dc0b7dd6e1f76a91c152b1fd0a8dc05b3` |
+| `copernicus/copernicus_2022_77.csv` | Copernicus CEMS (EWDS), `cems-fire-historical-v1` | Extraction GRIB ERA5 (2022, 365 jours, emprise IdF) filtrée sur les 6 points de grille du 77, avec `commune_77` associée (9 indices : 7 FWI canadiens + `fdimrk`, `buinfdr`) | 2026-11-27 | `1feb84aa36c261fd15756a74fc304bdc5534e45fa2df332743a02027dc04d4c6` |
+| `copernicus/copernicus_2022_idf.csv` | Idem | Idem, 13 points de grille en Île-de-France (départements 77, 78, 91, 94, 95) | 2026-11-27 | `6c84cc6978c5b7a21a29ea23c4689aa8a17824bccb21d419c3ca54ea074ffb9c` |
+| `copernicus/copernicus_2022_idf_dept_jour.csv` | Idem | Moyenne simple quotidienne par département calculée depuis `copernicus_2022_idf.csv` (5 départements) | 2026-11-27 | `e8e10b53af99581c434a5b45aa36c03f5e6d93cafa1527fdc2f9a187643be230` |
+| `copernicus/copernicus_2023_77.csv` | Idem | Idem, année 2023 (365 jours, 6 points du 77, 9 indices) | 2026-11-27 | `8194307e633daf850935365328c44514672cb6d42dbbc697ed0e1df7aa175caa` |
+| `copernicus/copernicus_2023_idf.csv` | Idem | Idem, année 2023 (13 points IdF) | 2026-11-27 | `425d1a3642832c0cd6205e7096acb0d966f8befe46dfbcd5902cd22ddf36a1cd` |
+| `copernicus/copernicus_2023_idf_dept_jour.csv` | Idem | Moyenne simple quotidienne par département, 2023 | 2026-11-27 | `6895bb35958128e4969847e7b033c1bd9e3508274e847d9b57d4a174d5073078` |
 | `copernicus/copernicus_2024_77.csv` | Copernicus CEMS (EWDS), `cems-fire-historical-v1` | Extraction GRIB ERA5 (2024, 366 jours, emprise IdF) filtrée sur les 6 points de grille du 77, avec `commune_77` associée (9 indices : 7 FWI canadiens + `fdimrk`, `buinfdr`) | 2026-11-19 | `4936b183ffa25a13dc7ac6eab778ed603a2e6b3ab16b5c6779c1fabe3c9af6ee` |
 | `copernicus/copernicus_2024_idf.csv` | Idem | Idem, 13 points de grille en Île-de-France (départements 77, 78, 91, 94, 95) | 2026-11-19 | `ec0400f47699f7b8f06040f3cb3bceb7aae60add9718d77c646491c86406bd63` |
 | `copernicus/copernicus_2024_idf_dept_jour.csv` | Idem | Moyenne simple quotidienne par département calculée depuis `copernicus_2024_idf.csv` (5 départements) | 2026-11-19 | `257acdaa5146b0f906eec140ec1e70ce9435e7c513a1a8300897bf9a0a850e2a` |
@@ -33,8 +39,8 @@ Pour vérifier qu'un fichier n'a pas été modifié : `shasum -a 256 <fichier>`,
   - **Paramètres de requête EWDS :**
     - `dataset` : `cems-fire-historical-v1`
     - `product_type` : `reanalysis` (`dataset_type`: `consolidated_dataset`, `system_version`: `4_1`)
-    - `variable` : les 7 indices du système canadien FWI présents sur toute la série (`2024-2026`) : `fire_weather_index` (`fwinx`), `build_up_index` (`fbupinx`), `drought_code` (`drtcode`), `duff_moisture_code` (`dufmcode`), `fine_fuel_moisture_code` (`ffmcode`), `fire_daily_severity_rating` (`fdsrte`), `initial_fire_spread_index` (`infsinx`). Les fichiers `2024` et `2025` contiennent aussi `fdimrk` (McArthur) et `buinfdr` (NFDRS), absents en `2026`.
-    - `year` : `2024` à `2026` (`2026` s'arrête au `2026-08-31`), tous les mois (`01` à `12`) et tous les jours (`01` à `31`).
+    - `variable` : les 7 indices du système canadien FWI présents sur toute la série (`2022-2026`) : `fire_weather_index` (`fwinx`), `build_up_index` (`fbupinx`), `drought_code` (`drtcode`), `duff_moisture_code` (`dufmcode`), `fine_fuel_moisture_code` (`ffmcode`), `fire_daily_severity_rating` (`fdsrte`), `initial_fire_spread_index` (`infsinx`). Les fichiers `2022`, `2023`, `2024` et `2025` contiennent aussi `fdimrk` (McArthur) et `buinfdr` (NFDRS), absents en `2026`.
+    - `year` : `2022` à `2026` (`2026` s'arrête au `2026-08-31`), tous les mois (`01` à `12`) et tous les jours (`01` à `31`).
     - Sous-ensemble spatial appliqué après lecture GRIB : `48.1 <= latitude <= 49.1` et `1.6 <= longitude <= 3.6`, puis filtrage géométrique sur les contours administratifs d'Île-de-France.
   - **Grille spatiale et agrégation départementale :**
     - Les GRIB source utilisent la **grille gaussienne réduite ERA5 (N320)** (dimension `values`, pas en latitude ~0,281° / ~28–30 km, pas en longitude 0,40° à 48,76°N et 0,417° à 49,04°N).
